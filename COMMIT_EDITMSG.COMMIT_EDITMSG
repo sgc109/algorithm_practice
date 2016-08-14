@@ -1,0 +1,45 @@
+
+
+# --------------
+# Please enter the commit message for your changes. Everything below
+# this paragraph is ignored, and an empty message aborts the commit.
+# Just close the window to accept your message.
+diff --git a/coffeeShop2.cpp b/coffeeShop2.cpp
+new file mode 100644
+index 0000000..9092802
+--- /dev/null
++++ b/coffeeShop2.cpp
+@@ -0,0 +1,32 @@
++#include <iostream>
++#include <stdio.h>
++#include <vector>
++
++using namespace std;
++
++struct SegTree {
++	int rangeSum;
++	int size;
++	SegTree(vector<int> &v) {
++		size = v.size();
++		rangeSum.resize(4*size);
++		init(0,size-1,1,v);
++	}
++	int init(int nodeLeft, int nodeRight, int node, vector<int> &v) {
++		if(nodeLeft == nodeRight) return rangeSum[node] = v[nodeLeft];
++
++		int nodeMid = (nodeLeft + nodeRight) / 2;
++		int sumLeft = init(nodeLeft, nodeMid, 2*node, v);
++		int sumRight = init(nodeMid+1, nodeRight, 2*node+1, v);
++
++		return rangeSum[node] = sumLeft + sumRight;
++	}
++	
++
++};
++
++int main() {
++	
++
++	return 0;
++}
+\ No newline at end of file
