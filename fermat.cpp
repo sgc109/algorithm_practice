@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <algorithm>
 
 const int MOD = 1000000007;
 
