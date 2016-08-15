@@ -192,10 +192,12 @@ def main():
     if language == -1:
         print u'무슨 언어인지 모르겠어요. 확장자를 확인해 주세요'
         return
-    sys.stdout.write(u'아이디: ')
-    username = r().strip()
-    sys.stdout.write(u'비밀번호: ')
-    password = getpass('')
+    # sys.stdout.write(u'아이디: ')
+    # username = r().strip()
+    username = 'sgc109'
+    # sys.stdout.write(u'비밀번호: ')
+    # password = getpass('')
+    password = 'gkdrhdeo1!@'
     if len(username) == 0:
         print u'아이디를 입력해 주세요'
         return

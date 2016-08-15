@@ -17,7 +17,7 @@ struct SegTree{
 		rangeSum.resize(4*size);
 		init(0,size-1,1,v);
 	}
-	init(int nodeLeft, int nodeRight, int node, vector<int> &v) {
+	int init(int nodeLeft, int nodeRight, int node, vector<int> &v) {
 		if(nodeLeft == nodeRight) return rangeSum[node] = v[nodeRight];
 
 		int nodeMid = (nodeLeft + nodeRight) / 2;
@@ -26,7 +26,7 @@ struct SegTree{
 
 		return rangeSum[node] = sumLeft + sumRight;
 	}
-	update(int nodeLeft, int nodeRight, int node, int pos) {
+	int update(int nodeLeft, int nodeRight, int node, int pos) {
 		if(nodeLeft == nodeRight && nodeRight == pos) return rangeSum[node] = 1;
 		if(pos < nodeLeft || nodeRight < pos) return rangeSum[node];
 
