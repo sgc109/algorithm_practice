@@ -40,6 +40,9 @@ struct RangeTree {
 };
  
 int main() {
+  long long a = 18446744073709551614L / 2;
+  printf("%lld",a);
+  return 0;
   FILE *fp;
   fp = fopen("output.txt","wb");
     FOR(i,100000) {

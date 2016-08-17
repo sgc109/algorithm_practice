@@ -15,9 +15,10 @@ typedef pair<int, int> ii;
 
 const int MAX_V = 100;
 const int INF = 0x3a3a3a3a;
+const long long INFL = 4223372036854775807L;
 
 int nodeCost[MAX_V];
-vector<int> upper;
+vector<long long> upper;
 vector<vector<ii> > adj;
 bool reachable[MAX_V][MAX_V];
 
@@ -67,7 +68,7 @@ bool bellman(int start) {
 int main() {
 	scanf("%d%d%d%d",&N,&S,&F,&M);
 	adj = vector<vector<ii> >(N, vector<ii>());
-	upper = vector<int>(N,INF);
+	upper = vector<long long>(N,INFL);
 	FOR(i,N) {
 		FOR(j,N) {
 			if(i==j) reachable[i][j] = true;
@@ -87,7 +88,7 @@ int main() {
 	bool isThereCycle = bellman(S);
 	if(!reachable[S][F]) printf("gg");
 	else if(isThereCycle) printf("Gee");
-	else printf("%d",-upper[F]);
+	else printf("%lld",-upper[F]);
 
 	return 0;
 }
