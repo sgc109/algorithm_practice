@@ -40,11 +40,9 @@ struct RangeTree {
 };
  
 int main() {
-  printf("Hello world!");
-  return 0;
   FILE *fp;
   fp = fopen("output.txt","wb");
-    FOR(i,10000) {
+    FOR(i,100000) {
       fprintf(fp,"%d ",i);
     }
     return 0;
