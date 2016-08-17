@@ -40,23 +40,12 @@ struct RangeTree {
 };
  
 int main() {
-    vector<int> ma;
-    vector<int> mi;
-    int n,m;
-    scanf("%d%d",&n,&m);
-    FOR(i,n) {
-        int tmp;
-        scanf("%d",&tmp);
-        ma.push_back(tmp);
-        mi.push_back(-tmp);
-    }
-    RangeTree maxTree(ma);
-    RangeTree minTree(mi);
-     
-    FOR(i,m) {
-        int a,b;
-        scanf("%d%d",&a,&b);
-        printf("%d %d\n",-minTree.RMQ(a-1,b-1),maxTree.RMQ(a-1,b-1));
+  printf("Hello world!");
+  return 0;
+  FILE *fp;
+  fp = fopen("output.txt","wb");
+    FOR(i,10000) {
+      fprintf(fp,"%d ",i);
     }
     return 0;
 }
