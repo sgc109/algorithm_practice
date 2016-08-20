@@ -1,16 +1,16 @@
+#include <iostream>
+#include <cstdio>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <cstring>
+#include <cmath>
 #define REP(i,a,b) for(int i = a;i < b; ++i)
 #define FOR(i,n) REP(i,0,n)
 #define LONG long long
 #define INFL 0x7fffffffffffffff
-  
-#include<iostream>
-#include<cstdio>
-#include<string>
-#include<vector>
-#include<algorithm>
-#include<string>
-#include<cstring>
-#include<cmath>
+#define gc getchar
   
 using namespace std;
  
@@ -38,15 +38,27 @@ struct RangeTree {
       return RMQ(0, n-1, left, right, 1);
   }
 };
+
+void scan_integer( int &x )
+{
+    register int c = gc();
+    x = 0;
+    int neg = 0;
+    for( ; ((c<48 || c>57) && c != '-'); c = gc() );
+    if( c=='-' ) {
+        neg=1;
+        c=gc();
+    }
+    for( ;c>47 && c<58; c = gc() ) {
+        x = (x << 1) + (x << 3) + c - 48;
+    }
+    if( neg )
+        x=-x;
+} 
  
 int main() {
-  long long a = 18446744073709551614L / 2;
-  printf("%lld",a);
-  return 0;
-  FILE *fp;
-  fp = fopen("output.txt","wb");
-    FOR(i,100000) {
-      fprintf(fp,"%d ",i);
-    }
+    int x;
+    scan_integer(x);
+    printf("%d",x);
     return 0;
 }

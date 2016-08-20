@@ -4,9 +4,13 @@
 #include <algorithm>
 #define REP(i,a,b) for(int i = a; i < b; ++i)
 #define FOR(i,n) REP(i,0,n)
+#define mp make_pair
 #define pb push_back
 
 using namespace std;
+
+typedef pair<int, int> ii;
+const int INF = 0x3a3a3a3a;
 
 struct SegTree{
 	vector<vector<int> > rangeSeq;
@@ -24,93 +28,87 @@ struct SegTree{
 		}
 
 		int nodeMid = (nodeLeft + nodeRight) >> 1;
-		
-		vector<int> seqLeft = init(nodeLeft, nodeMid, 2*node, v);
-		vector<int> seqRight = init(nodeMid+1, nodeRight, 2*node+1, v);
+
+		vector<int> rangeLeft = init(nodeLeft, nodeMid, 2*node, v);
+		vector<int> rangeRight = init(nodeMid+1, nodeRight, 2*node+1, v);
 		int posLeft = 0;
 		int posRight = 0;
-		while(posLeft < seqLeft.size() && posRight < seqRight.size()) {
-			if(seqLeft[posLeft] < seqRight[posRight]) {
-				ret.pb(seqLeft[posLeft]);
+		while(posLeft < rangeLeft.size() && posRight < rangeRight.size()) {
+			if(rangeLeft[posLeft] <= rangeRight[posRight]) {
+				ret.pb(rangeLeft[posLeft]);
 				++posLeft;
 			}
 			else {
-				ret.pb(seqRight[posRight]);
+				ret.pb(rangeRight[posRight]);
+				++posRight;	
+			}
+		}
+		if(posLeft == rangeLeft.size()) {
+			while(posRight < rangeRight.size()) {
+				ret.pb(rangeRight[posRight]);
 				++posRight;
 			}
 		}
-		if(posLeft == seqLeft.size()) {
-			while(posRight < seqRight.size()) {
-				ret.pb(seqRight[posRight]);
-				++posRight;
-			}
-		}
-		else if(posRight == seqRight.size()) {
-			while(posLeft < seqLeft.size()) {
-				ret.pb(seqLeft[posLeft]);
+		else if(posRight == rangeRight.size()) {
+			while(posLeft < rangeLeft.size()) {
+				ret.pb(rangeLeft[posLeft]);
 				++posLeft;
 			}
 		}
 
-		return rangeSeq[node] = ret;
+		return rangeSeq[node]  = ret;
 	}
-	vector<int> query(int nodeLeft, int nodeRight, int left, int right, int node, int pos) {
-		vector<int> ret;
-		if(left <= nodeLeft && nodeRight <= right) return rangeSeq[node];
-		if(nodeRight < left || right < nodeLeft) return ret;
-
+	int query(int nodeLeft, int nodeRight, int left, int right, int node, int q) {
+		if(right < nodeLeft || nodeRight < left) return 0;
+		if(left <= nodeLeft && nodeRight <= right) return lower_bound(rangeSeq[node].begin(), rangeSeq[node].end(), q) - rangeSeq[node].begin();
 		int nodeMid = (nodeLeft + nodeRight) >> 1;
 
-		vector<int> seqLeft = query(nodeLeft, nodeMid, left, right, 2*node, pos);
-		vector<int> seqRight = query(nodeMid+1, nodeRight, left, right, 2*node+1, pos);
+		int smallerLeft = query(nodeLeft, nodeMid, left, right, 2*node, q);
+		int smallerRight = query(nodeMid+1, nodeRight, left, right, 2*node+1, q);
 
-		int posLeft = 0;
-		int posRight = 0;
-		while(posLeft < seqLeft.size() && posRight < seqRight.size()) {
-			if(seqLeft[posLeft] < seqRight[posRight]) {
-				ret.pb(seqLeft[posLeft]);
-				++posLeft;
-			}
-			else {
-				ret.pb(seqRight[posRight]);
-				++posRight;
-			}
-		}
-		if(posLeft == seqLeft.size()) {
-			while(posRight < seqRight.size()) {
-				ret.pb(seqRight[posRight]);
-				++posRight;
-			}
-		}
-		else if(posRight == seqRight.size()) {
-			while(posLeft < seqLeft.size()) {
-				ret.pb(seqLeft[posLeft]);
-				++posLeft;
-			}
-		}
-
-		return ret;
+		return smallerLeft + smallerRight;
 	}
-	vector<int> query(int left, int right, int pos) {
-		return query(0,size-1,left,right,1,pos);
+	int query(int left, int right, int q) {
+		return query(0,size-1,left,right,1,q);
 	}
 };
 
-int N, Q;
+int n,m;
 
 int main() {
-	scanf("%d%d",&N,&Q);
-	vector<int> v(N);
-	FOR(i,N) {
-		scanf("%d",&v[i]);
+	scanf("%d%d",&n,&m);
+	
+	vector<int> raw(n);
+	vector<int> sorted(n);
+	vector<int> compressed(n);
+
+	FOR(i,n) {
+		scanf("%d",&raw[i]);
+		sorted[i] = raw[i];
 	}
-	SegTree segTree(v);
-	FOR(i,Q) {
-		int a,b,c;
-		scanf("%d%d%d",&a,&b,&c);
-		--a;--b;
-		vector<int> ans = segTree.query(a,b,c);
-		printf("%d\n", ans[c-1]);
+	sort(sorted.begin(),sorted.end());
+	
+	FOR(i,n) {
+		compressed[i] = lower_bound(sorted.begin(),sorted.end(),raw[i]) - sorted.begin();
+	}
+	SegTree segTree(compressed);
+	FOR(i,m) {
+		int l,r,k;
+		scanf("%d%d%d",&l,&r,&k);
+		--l;--r;
+		int e = n;
+		int s = 0;
+		while(e - s > 1) {
+			int m = (e + s) >> 1;
+			if(segTree.query(l,r,m) <= k-1) {
+				s = m;
+			}
+			else if(segTree.query(l,r,m) > k-1) {
+				e = m;
+			}
+		}
+		
+		printf("%d\n",sorted[s]);
 	}
 	return 0;
 }
