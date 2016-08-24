@@ -7,8 +7,6 @@
 #include <stack>
 #include <cstring>
 #include <cstdlib>
-#include <string>
-#include <unordered_set>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -25,9 +23,20 @@ typedef vector<vector<int> > vvi;
 typedef vector<ii> vii;
 	
 const int INF = 0x3a3a3a3a;
-const int MAX_N = 1000000;
+const int MAX_V = 1000000;
 
 int main() {
-
+	int n,m;
+	scanf("%d%d",&n,&m);
+	bool bnw = true;
+	FOR(i,n) {
+		FOR(j,m) {
+			char c;
+			scanf(" %c",&c);
+			if(c != 'B' && c != 'W' && c != 'G') bnw = false;
+		}
+	}
+	if(bnw) printf("#Black&White");
+	else printf("#Color");
 	return 0;
 }
