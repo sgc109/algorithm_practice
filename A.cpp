@@ -26,9 +26,24 @@ typedef vector<vector<int> > vvi;
 typedef vector<ii> vii;
 	
 const int INF = 0x3a3a3a3a;
-const int MAX_N = 1000000;
+const int MAX_N = 1000001;
+
+int a[MAX_N];
 
 int main() {
-
+	int n,b,d;
+	scanf("%d%d%d",&n,&b,&d);
+	long long cur = 0;
+	long long cnt = 0;
+	FOR(i,n) {
+		scanf("%d",a+i);
+		if(a[i] > b) continue;
+		cur += a[i];
+		if(cur > d) {
+			++cnt;
+			cur = 0;
+		}
+	}
+	printf("%I64d",cnt);
 	return 0;
 }

@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <string>
 #include <unordered_set>
+#include <set>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -31,44 +32,36 @@ const int CNT_MOD = 2;
 const long long Hash[CNT_MOD] = {1000000007, 1000000009};
 
 char S[MAX_N];
-long long f[220];
-unordered_set<long long> h[CNT_MOD];
+unordered_set<long long> h;
 long long g[26][CNT_MOD];
 int n;
 
 bool check(int x) {
-	FOR(i,CNT_MOD) {
-		h[i].clear();
-	}
+	h.clear();
 
 	FOR(i,26) {
-		FOR(k,CNT_MOD) g[i][k] = i;
+		FOR(k,CNT_MOD) g[i][k] = 'a' + i;
 		FOR(j,x-1) {
 			FOR(k,CNT_MOD) {
-				g[i][k] = (g[i][k] * 26) % Hash[k];
+				g[i][k] = (g[i][k] * 257) % Hash[k];
 			}
 		}
 	}
 	long long val[CNT_MOD] = {0,};
 	FOR(i,x) {
 		FOR(k,CNT_MOD) {
-			val[k] = (val[k] * 26 + f[S[i]]) % Hash[k];
+			val[k] = (val[k] * 257 + S[i]) % Hash[k];
 		}
-	}]
+	}
 	FOR(i,n-x+1) {
-		FOR(k,CNT_MOD) {
-			if(!h[k].count(val[k])) break;
-			if(k==CNT_MOD-1) return true;
-		}
-		FOR(k,CNT_MOD) {
-			if(!h[k].count(val[k])) h[k].insert(val[k]);
-		}
+		if(h.count(val[0]*Hash[0]+val[1])) return true;
+		h.insert(val[0]*Hash[0]+val[1]);
 		
 		if(i != n-x) {
 			FOR(k,CNT_MOD) {
-				val[k] = (val[k] - g[f[S[i]]][k] + Hash[k]) % Hash[k];
-				val[k] = (val[k] * 26) % Hash[k];
-				val[k] = (val[k] + f[S[i+x]]) % Hash[k];
+				val[k] = (val[k] - g[S[i]-'a'][k] + Hash[k]) % Hash[k];
+				val[k] = (val[k] * 257) % Hash[k];
+				val[k] = (val[k] + S[i+x]) % Hash[k];
 			}
 		}
 	}
@@ -77,11 +70,8 @@ bool check(int x) {
 }
 
 int main() {
-	FOR(i,26) {
-		f['a'+i] = i;
-	}
-	scanf("%d ",&n);
 	gets(S);
+	n = strlen(S);
 	int left = 0, right = n;
 	while(left +1 < right) {
 		int mid = (left + right) >> 1;

@@ -24,11 +24,38 @@ typedef vector<int> vi;
 typedef vector<ll> vll;
 typedef vector<vector<int> > vvi;
 typedef vector<ii> vii;
-	
+
 const int INF = 0x3a3a3a3a;
 const int MAX_N = 1000000;
 
+char S[100005];
+
 int main() {
+	gets(S);
+
+	int left=-1, right=-1;
+	FOR(i,strlen(S)) {
+		if(S[i] != 'a') {
+			left = i;
+			putchar(S[i]-1);
+			break;
+		}
+		
+		if(i == (strlen(S)-1)) {
+			putchar('z');
+			return 0;
+		}
+		else putchar(S[i]);
+	}
+	right = left;	
+	REP(i,left+1,strlen(S)) {
+		if(S[i] == 'a') break;
+		right = i;
+		putchar(S[i]-1);
+	}
+	REP(i,right+1,strlen(S)) {
+		putchar(S[i]);
+	}
 
 	return 0;
 }
