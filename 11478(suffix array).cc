@@ -80,8 +80,8 @@ int cntCommonPrefix(int a, int b) {
 	return ret;
 }
 
-int cntPartialString(string& s) {
-	int cnt = 0;
+long long cntPartialString(string& s) {
+	long long cnt = 0;
 	vector<int> suffixArray = getSuffixArray(s);
 	cnt += s.size() - suffixArray[0];
 	REP(i,1,n) {
@@ -94,6 +94,6 @@ int cntPartialString(string& s) {
 int main() {
 	cin >> s;
 	n = s.size();
-	printf("%d",cntPartialString(s));
+	printf("%lld",cntPartialString(s));
 	return 0;
 }

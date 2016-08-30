@@ -24,38 +24,47 @@ typedef vector<int> vi;
 typedef vector<ll> vll;
 typedef vector<vector<int> > vvi;
 typedef vector<ii> vii;
-
+	
 const int INF = 0x3a3a3a3a;
 const int MAX_N = 1000000;
 
-char S[100005];
+char seat[1001][4];
 
 int main() {
-	gets(S);
-
-	int left=-1, right=-1;
-	FOR(i,strlen(S)) {
-		if(S[i] != 'a') {
-			left = i;
-			putchar(S[i]-1);
+	int n;
+	scanf("%d ",&n);
+	FOR(i,n) {
+		scanf("%c",&seat[i][0]);
+		scanf("%c",&seat[i][1]);
+		getchar();
+		scanf("%c",&seat[i][2]);
+		scanf("%c ",&seat[i][3]);
+	}
+	bool ans = false;
+	FOR(i,n) {
+		if(seat[i][0] == 'O' && seat[i][1] == 'O') {
+			seat[i][0] = '+';
+			seat[i][1] = '+';
+			ans = true;
 			break;
 		}
-		
-		if(i == (strlen(S)-1)) {
-			putchar('z');
-			return 0;
+		if(seat[i][2] == 'O' && seat[i][3] == 'O') {
+			seat[i][2] = '+';
+			seat[i][3] = '+';
+			ans = true;
+			break;	
 		}
-		else putchar(S[i]);
-	}
-	right = left;	
-	REP(i,left+1,strlen(S)) {
-		if(S[i] == 'a') break;
-		right = i;
-		putchar(S[i]-1);
-	}
-	REP(i,right+1,strlen(S)) {
-		putchar(S[i]);
 	}
 
+	if(ans) {
+		printf("YES\n");
+		FOR(i,n) {
+			FOR(j,2) printf("%c",seat[i][j]);
+			printf("|");
+			FOR(j,2) printf("%c",seat[i][j+2]);
+			printf("\n");
+		}
+	}
+	else printf("NO");
 	return 0;
 }
