@@ -20,7 +20,7 @@
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
 
 using namespace std;
-	
+
 typedef pair<long long, long long> pll;
 
 const int INF = 0x3a3a3a3a;
@@ -30,17 +30,22 @@ const long long Hash[2] = {1000000007,1000000009};
 
 struct SegTree {
 	vector<pll> rangeHash;
+	vector<int> lazy;
 	int size;
 	long long f[220];
 	long long g[MAX_N][2];
+	long long l[MAX_N][2];
 	SegTree(string &s) {
 		size = s.size();
 		rangeHash.resize(4*size);
+		lazy = vector<int>(4*size,0);
 		FOR(i,10) f['0'+i] = i+1;
 		g[0][0] = g[0][1] = 1;
+		l[0][0] = l[0][1] = 1;
 		REP(i,1,size) {
 			FOR(k,2) {
 				g[i][k] = (g[i-1][k] * 257) % Hash[k];
+				l[i][k] = (g[i][k] + l[i-1][k]) % Hash[k];
 			}
 		}
 		
@@ -61,6 +66,14 @@ struct SegTree {
 	}
 
 	pll query(int nodeLeft, int nodeRight, int left, int right, int node) {
+		if(lazy[node] != 0) {
+			rangeHash[node] = mp(l[nodeRight-nodeLeft][0]*lazy[node]%Hash[0],l[nodeRight-nodeLeft][1]*lazy[node]%Hash[1]);
+			if(nodeLeft != nodeRight) {
+				lazy[2*node] = lazy[node];
+				lazy[2*node+1] = lazy[node];
+			}
+			lazy[node] = 0;
+		}
 		if(nodeRight < left || right < nodeLeft) return mp(0,0);
 		if(left <= nodeLeft && nodeRight <= right) return rangeHash[node];
 
@@ -74,8 +87,22 @@ struct SegTree {
 	}
 
 	pll update(int nodeLeft, int nodeRight, int left, int right, int node, char val) {
-		if(nodeLeft == nodeRight && left <= nodeLeft && nodeRight <= right) return rangeHash[node] = mp(f[val],f[val]);
+		if(lazy[node] != 0) {
+			rangeHash[node] = mp(l[nodeRight-nodeLeft][0]*lazy[node]%Hash[0],l[nodeRight-nodeLeft][1]*lazy[node]%Hash[1]);
+			if(nodeLeft != nodeRight) {
+				lazy[2*node] = lazy[node];
+				lazy[2*node+1] = lazy[node];
+			}
+			lazy[node] = 0;
+		}
 		if(right < nodeLeft || nodeRight < left) return rangeHash[node];
+		if(left <= nodeLeft && nodeRight <= right) {
+			if(nodeLeft != nodeRight) {
+				lazy[2*node] = f[val];
+				lazy[2*node+1] = f[val];
+			}
+			return rangeHash[node] = mp(l[nodeRight-nodeLeft][0]*f[val]%Hash[0],l[nodeRight-nodeLeft][1]*f[val]%Hash[1]);
+		}
 
 		int nodeMid = (nodeLeft + nodeRight) >> 1;
 		pll leftRange = update(nodeLeft, nodeMid, left, right, 2*node, val);

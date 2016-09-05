@@ -23,13 +23,47 @@
 using namespace std;
 
 typedef pair<long long, long long> pll;
-typedef vector<int> vi;
-typedef vector<vector<int> > vvi;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 1000000;
+const int MAX_N = 1000002;
+
+queue<int> q;
+int depth[MAX_N];
+
+void bfs(int start) {
+	q.push(start);
+	depth[start] = 0;
+	while(!q.empty()) {
+		int here = q.front();
+		q.pop();
+		if(here==1) break;
+		if(here%3==0 && depth[here/3] == -1) {
+			depth[here/3] = 1+depth[here];
+			q.push(here/3);
+		}
+		if(here%2==0 && depth[here/2] == -1) {
+			depth[here/2] = 1+depth[here];
+			q.push(here/2);
+		}
+		if(depth[here-1] == -1) {
+			depth[here-1] = 1+depth[here];
+			q.push(here-1);
+		}
+	}
+
+}
 
 int main() {
+	memset(depth,-1,sizeof(depth));
+	int n;
+	inp1(n);
+	if(n==1) {
+		printf("0");
+		return 0;
+	}
+	bfs(n);
+	printf("%d",depth[1]);
+
 	return 0;
 }

@@ -10,7 +10,6 @@
 #include <string>
 #include <unordered_set>
 #include <set>
-#include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -23,13 +22,17 @@
 using namespace std;
 
 typedef pair<long long, long long> pll;
-typedef vector<int> vi;
-typedef vector<vector<int> > vvi;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
 int main() {
+	long long tmp = 1;
+	REP(i,1,21) {
+		tmp*=i;
+		printf("%lld\n",tmp);
+	}
+	printf("%llu",(unsigned long long)-1);
 	return 0;
 }

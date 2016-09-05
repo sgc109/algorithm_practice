@@ -10,7 +10,6 @@
 #include <string>
 #include <unordered_set>
 #include <set>
-#include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -23,13 +22,38 @@
 using namespace std;
 
 typedef pair<long long, long long> pll;
-typedef vector<int> vi;
-typedef vector<vector<int> > vvi;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 1000000;
+const int MAX_N = 1000001;
+
+int tree[MAX_N];
+int n;
+long long m;
+
+long long treeAmount(int h) {
+	long long ret = 0;
+	FOR(i,n) {
+		if(tree[i] > h) {
+			ret += tree[i] - h;
+		}
+	}
+
+	return ret;
+}
 
 int main() {
+	inp1(n);
+	scanf("%lld",&m);
+	FOR(i,n) inp1(tree[i]);
+
+	int l = 0, r = 1000000000;
+	while(l+1<r) {
+		int mid = (l+r)/2;
+		if(treeAmount(mid) >= m) l=mid;
+		else r=mid;
+	}
+
+	printf("%d",l);
 	return 0;
 }
