@@ -10,6 +10,7 @@
 #include <string>
 #include <unordered_set>
 #include <set>
+#include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -22,15 +23,13 @@
 using namespace std;
 
 typedef pair<long long, long long> pll;
+typedef vector<int> vi;
+typedef vector<vector<int> > vvi;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
 int main() {
-	FILE *fp = fopen("output.txt","wb");
-	REP(i,1,51) {
-		fprintf(fp,"%d ",949+i);
-	}
 	return 0;
 }

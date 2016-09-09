@@ -31,6 +31,52 @@ const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
+int n,m;
+vi adj[1000];
+int aMatch[1000],bMatch[1000];
+int visited[1000];
+
+bool dfs(int here) {
+	if(visited[here]) return false;
+	visited[here] = 1;
+	FOR(i,adj[here].size()) {
+		int there = adj[here][i];
+		if(bMatch[there] == -1 || dfs(bMatch[there])) {
+			bMatch[there] = here;
+			aMatch[here] = there;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+int bipartite() {
+	int size=0;
+	FOR(i,n) {
+		memset(visited,0,sizeof(visited));
+		if(dfs(i)) ++size;
+	}
+
+	return size;
+}
 int main() {
+	memset(aMatch,-1,sizeof(aMatch));
+	memset(bMatch,-1,sizeof(bMatch));
+	inp2(n,m);
+	FOR(i,n){
+		int c;
+		inp1(c);
+		FOR(j,c){
+			int a;
+			inp1(a);
+			--a;
+			adj[i].pb(a);
+		}
+	}
+
+	int ans = bipartite();
+	printf("%d",ans);
+
 	return 0;
 }
