@@ -29,27 +29,22 @@ typedef pair<int,int> pii;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 50;
-const int MAX_V = 2500;
+const int MAX_N = 100;
+const int MAX_V = 5000;
 
-vi adj[MAX_V];
-int aMatch[MAX_V],bMatch[MAX_V];
 int n,m;
 int visited[MAX_V];
-char map[MAX_N][MAX_N];
-pii nodeMap[MAX_N][MAX_N];
+int aMatch[MAX_V],bMatch[MAX_V];
+vi adj[MAX_V];
+int map[MAX_N][MAX_N];
+pii groupMap[MAX_N][MAX_N];
 int cntGaro,cntSero;
-bool inRange(int i, int j) {
-	if(0<=i&&i<n&&0<=j&&j<m) return true;
-	return false;
-}
 
 bool dfs(int a) {
 	if(visited[a]) return false;
 	visited[a] = 1;
 
-	FOR(i, adj[a].size()) {
-		int b = adj[a][i];
+	for(auto &b : adj[a]) {
 		if(bMatch[b] == -1 || dfs(bMatch[b])) {
 			bMatch[b] = a;
 			aMatch[a] = b;
@@ -58,47 +53,55 @@ bool dfs(int a) {
 	}
 	return false;
 }
-
 int bipartite() {
-	memset(aMatch,-1,sizeof(aMatch));
-	memset(bMatch,-1,sizeof(bMatch));
 	int ret = 0;
-	FOR(a,cntGaro) {
+	FOR(i,cntGaro) {
 		memset(visited,0,sizeof(visited));
-		if(dfs(a)) ++ret;
+		if(dfs(i)) ++ret;
 	}
 	return ret;
 }
+
+bool inRange(int i, int j) {
+	if(0<=i&&i<n&&0<=j&&j<m) return true;
+	return false;
+}
 int main() {
 	inp2(n,m);
-	getchar();
-	FOR(i,n){
-		scanf("%s",map[i]);
+	FOR(i,n) {
 		FOR(j,m) {
-			nodeMap[i][j] = mp(-1,-1);
+			inp1(map[i][j]);
+			groupMap[i][j] = mp(-1,-1);
 		}
 	}
-	
-	FOR(i,n){
-		FOR(j,m){
-			if(map[i][j]=='.') continue;
-			if(nodeMap[i][j].first == -1) {
+	memset(aMatch,-1,sizeof(aMatch));
+	memset(bMatch,-1,sizeof(bMatch));
+	FOR(i,n) {
+		FOR(j,m) {
+			if(map[i][j] == 2 || map[i][j] == 1) continue;
+			if(groupMap[i][j].first == -1) {
 				int y=i,x=j;
-				for(;inRange(y,x)&&map[y][x]!='.';--x) {}
+				for(;inRange(y,x)&&map[y][x]!=2;--x) {}
 				++x;
-				for(;inRange(y,x)&&map[y][x]!='.';++x) {
-					nodeMap[y][x].first = cntGaro;
-					if(nodeMap[y][x].second != -1) adj[nodeMap[y][x].first].pb(nodeMap[y][x].second);
+				for(;inRange(y,x)&&map[y][x]!=2;++x) {
+					if(map[y][x]==1) continue;
+					groupMap[y][x].first = cntGaro;
+					if(groupMap[y][x].second != -1) {
+						adj[groupMap[y][x].first].pb(groupMap[y][x].second);
+					}
 				}
 				++cntGaro;
 			}
-			if(nodeMap[i][j].second == -1) {
+			if(groupMap[i][j].second == -1) {
 				int y=i,x=j;
-				for(;inRange(y,x)&&map[y][x]!='.';--y) {}
+				for(;inRange(y,x)&&map[y][x]!=2;--y) {}
 				++y;
-				for(;inRange(y,x)&&map[y][x]!='.';++y) {
-					nodeMap[y][x].second = cntSero;
-					if(nodeMap[y][x].first != -1) adj[nodeMap[y][x].first].pb(nodeMap[y][x].second);
+				for(;inRange(y,x)&&map[y][x]!=2;++y) {
+					if(map[y][x]==1) continue;
+					groupMap[y][x].second = cntSero;
+					if(groupMap[y][x].first != -1) {
+						adj[groupMap[y][x].first].pb(groupMap[y][x].second);
+					}
 				}
 				++cntSero;
 			}

@@ -29,8 +29,11 @@ const int MAX_N = 1000000;
 
 int main() {
 	FILE *fp = fopen("output.txt","wb");
-	REP(i,1,51) {
-		fprintf(fp,"%d ",949+i);
+	FOR(i,26) {
+		fprintf(fp,"%c %c %d\n",'A'+i,'A'+i+1,i+1);	
+	}
+	FOR(i,26) {
+		fprintf(fp,"%c %c %d\n",'a'+i,'a'+i+1,i+1);	
 	}
 	return 0;
 }

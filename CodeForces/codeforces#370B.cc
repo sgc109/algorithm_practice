@@ -31,6 +31,36 @@ const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
+char str[100004];
+int cnt[220]={0,};
+int c[5]={'R','L','U','D'};
 int main() {
+	scanf("%s",str);
+	int len = strlen(str);
+	if(len%2 != 0) {
+		printf("-1");
+		return 0;
+	}
+	FOR(i,len) {
+		++cnt[str[i]];
+	}
+
+	int sum = 0;
+	FOR(i,4) {
+		sum += cnt[c[i]];
+	}
+	int a = abs(cnt['L']-cnt['R']);
+	int b = abs(cnt['U']-cnt['D']);
+
+	int ans=0;
+	if(a%2==1) {
+		ans++;
+		a--;
+		b--;
+	}
+	ans+=a/2;
+	ans+=b/2;
+	
+	printf("%d",ans);
 	return 0;
 }

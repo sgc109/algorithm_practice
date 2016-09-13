@@ -10,7 +10,7 @@
 #include <string>
 #include <unordered_set>
 #include <set>
-#include <map>
+// #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -25,23 +25,20 @@ using namespace std;
 typedef pair<long long, long long> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
+typedef pair<int,int> pii;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 1001;
-const int MAX_V = 2003;
-int n;
-int stat[MAX_N][3];
-int cap[MAX_V][MAX_V],flow[MAX_V][MAX_V];
+const int MAX_N = 500;
+const int MAX_V = 1002;
+
+int n,k;
 vi adj[MAX_V];
-
-int A(int x) {return 2+x;}
-int B(int x) {return 2+n+x;}
-
+int cap[MAX_V][MAX_V],flow[MAX_V][MAX_V];
 int parent[MAX_V];
 
 bool dfs(int here) {
-	if(here == 1) return true;
+	if(here==1) return true;
 
 	FOR(i,adj[here].size()) {
 		int there = adj[here][i];
@@ -52,54 +49,42 @@ bool dfs(int here) {
 	}
 	return false;
 }
-int edmonds() {
+int fordFulkerson() {
 	int ret = 0;
 	while(true) {
 		memset(parent,-1,sizeof(parent));
-
 		parent[0]=0;
 		if(!dfs(0)) break;
 
-		int start=-1,finish=-1;
 		int minFlow=INF;
 		for(int p = 1; p != parent[p]; p = parent[p]) {
 			minFlow = min(minFlow, cap[parent[p]][p]-flow[parent[p]][p]);
 		}
-
 		for(int p = 1; p != parent[p]; p = parent[p]) {
 			flow[parent[p]][p] += minFlow;
 			flow[p][parent[p]] -= minFlow;
 		}
-		
-
 		ret += minFlow;
+
+
 	}
 	return ret;
 }
 
+int A(int x){return 2+x;}
+int B(int x){return 2+n+x;}
 int main() {
-	inp1(n);
-	FOR(i,n) {
-		inp3(stat[i][0],stat[i][1],stat[i][2]);
+	inp2(n,k);
+	FOR(i,k){
+		int a,b;
+		inp2(a,b);
+		--a;--b;
+		cap[A(a)][B(b)] = 1;
+		adj[A(a)].pb(B(b));
+		adj[B(b)].pb(A(a));
 	}
-
-	FOR(i,n){
-		FOR(j,n) {
-			if(i==j) continue;
-			if(stat[i][0] == stat[j][0] && stat[i][1] == stat[j][1] && stat[i][2] == stat[j][2]) {
-				if(cap[A(j)][B(i)] == 0) {
-					cap[A(i)][B(j)] = 1;
-					adj[A(i)].pb(B(j));
-					adj[B(j)].pb(A(i));
-				}
-			}
-			else if(stat[i][0] >= stat[j][0] && stat[i][1] >= stat[j][1] && stat[i][2] >= stat[j][2]) {
-				cap[A(i)][B(j)] = 1;
-				adj[A(i)].pb(B(j));
-				adj[B(j)].pb(A(i));
-			}
-		}
-		cap[0][A(i)] = 2;
+	FOR(i,n) {
+		cap[0][A(i)] = 1;
 		adj[0].pb(A(i));
 		adj[A(i)].pb(0);
 
@@ -108,8 +93,7 @@ int main() {
 		adj[1].pb(B(i));
 	}
 
-	int matched = edmonds();
+	printf("%d",fordFulkerson());
 
-	printf("%d",n-matched);
 	return 0;
 }

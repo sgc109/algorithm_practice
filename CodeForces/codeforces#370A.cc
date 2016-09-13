@@ -8,7 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-#include <unordered_set>
+// #include <unordered_set>
 #include <set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
@@ -31,6 +31,16 @@ const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
+int n;
+int a[100002];
 int main() {
+	inp1(n);
+	FOR(i,n){
+		inp1(a[i]);
+	}
+	FOR(i,n-1) {
+		printf("%d ",a[i]+a[i+1]);
+	}
+	printf("%d",a[n-1]);
 	return 0;
 }
