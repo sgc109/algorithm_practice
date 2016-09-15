@@ -8,7 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-// #include <unordered_set>
+#include <unordered_set>
 #include <set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
@@ -29,12 +29,20 @@ typedef pair<int,int> pii;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 1000000;
+const int MAX_V = 1004;
+
+int cap[MAX_V][MAX_V], flow[MAX_V][MAX_V], cost[MAX_V][MAX_V];
+vi adj[MAX_V];
+int upper[MAX_V];
+int n;
+
+int A(int x){
+	return 2+x;
+}
+int B(int x){
+	return 2+n+x;
+}
 
 int main() {
-	vector<pii> v;
-	v.pb(mp(1,2));
-	v.pb(mp(2,3));
-	printf("%d",lower_bound(v.begin(),v.end(),mp(1,3))-v.begin());
 	return 0;
 }

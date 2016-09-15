@@ -8,7 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-// #include <unordered_set>
+#include <unordered_set>
 #include <set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
@@ -30,11 +30,50 @@ typedef pair<int,int> pii;
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
-
+int n,k;
+int maxLen;
+int maxL,maxR;
+int cnt[1000003];
+int a[500002];
+int kind;
 int main() {
-	vector<pii> v;
-	v.pb(mp(1,2));
-	v.pb(mp(2,3));
-	printf("%d",lower_bound(v.begin(),v.end(),mp(1,3))-v.begin());
+	inp2(n,k);
+	FOR(i,n) {
+		scanf("%d",a+i);
+	}
+	int l=0,r=0;
+	while(l<n && r<n){
+		if(cnt[a[r]] > 0) {
+			++cnt[a[r]];
+			++r;
+			if(maxLen < r-l) {
+				maxLen=r-l;
+				maxL=l;
+				maxR=r-1;
+			}
+			continue;
+		}
+		else if(cnt[a[r]] == 0){
+			if(kind==k) {
+				while(kind==k){
+					if(cnt[a[l]]==1) {
+						--kind;
+					}
+					--cnt[a[l]];
+					++l;
+				}
+			}
+			++kind;
+			++cnt[a[r]];
+			++r;
+			if(maxLen < r-l) {
+				maxLen=r-l;
+				maxL=l;
+				maxR=r-1;
+			}
+		}
+	}
+	printf("%d %d",maxL+1,maxR+1);
+	
 	return 0;
 }

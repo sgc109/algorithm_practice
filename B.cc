@@ -8,7 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-// #include <unordered_set>
+#include <unordered_set>
 #include <set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
@@ -31,10 +31,41 @@ const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
+int a[100002];
+int n;
+vi v;
 int main() {
-	vector<pii> v;
-	v.pb(mp(1,2));
-	v.pb(mp(2,3));
-	printf("%d",lower_bound(v.begin(),v.end(),mp(1,3))-v.begin());
+	inp1(n);
+	FOR(i,n) scanf("%d",a+i);
+	sort(a,a+n);
+	int minn = INF, maxx = -1, cntNum = 0;
+	FOR(i,n) {
+		if(i==0) {
+			++cntNum;
+			v.pb(a[i]);
+		}
+		else {
+			if(a[i] != a[i-1]) {
+				++cntNum;
+				v.pb(a[i]);
+			}
+		}
+
+	}
+	sort(v.begin(),v.end());
+	if(v.size() > 3) {
+		printf("NO");
+		return 0;
+	}
+
+	if(v.size() < 3) {
+		printf("YES");
+		return 0;
+	}
+
+	if(v[0]+v[2] == v[1]*2) {
+		printf("YES");
+	}
+	else printf("NO");
 	return 0;
 }

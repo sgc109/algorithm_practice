@@ -8,7 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-// #include <unordered_set>
+#include <unordered_set>
 #include <set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
@@ -29,12 +29,42 @@ typedef pair<int,int> pii;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 1000000;
+const int MAX_V = 100002;
+
+int n,m;
+
+int change[MAX_V];
+priority_queue<pair<int,pair<int,int> > > pq;
+vector<pii> adj[MAX_V];
+
+
+int dijkstra(int start) {
+	change[start] = 0;
+	pq.push(mp(0,mp(start,0)));
+	while(!pq.empty() && dist[n] == -1) {
+		int here = pq.top().second.first;
+		int changed = -pq.top().first;
+		int lastLine = pq.top().second.second;
+		for(auto &p : adj[here]) {
+			int next = p.first;
+			int nextLine = p.second;
+			int trans = (lastLine != nextLine);
+			if(change[next] > )
+		}
+	}
+}
 
 int main() {
-	vector<pii> v;
-	v.pb(mp(1,2));
-	v.pb(mp(2,3));
-	printf("%d",lower_bound(v.begin(),v.end(),mp(1,3))-v.begin());
+	memset(change,0x3a,sizeof(change));
+
+	inp2(n,m);
+	FOR(i,m) {
+		int a,b,c;
+		inp3(a,b,c);
+		adj[a].pb(mp(b,c));
+		adj[b].pb(mp(a,c));
+	}
+
+	// dijkstra(1);
 	return 0;
 }

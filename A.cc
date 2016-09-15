@@ -8,7 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-// #include <unordered_set>
+#include <unordered_set>
 #include <set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
@@ -32,9 +32,29 @@ const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
 int main() {
-	vector<pii> v;
-	v.pb(mp(1,2));
-	v.pb(mp(2,3));
-	printf("%d",lower_bound(v.begin(),v.end(),mp(1,3))-v.begin());
+	long long l1,r1,l2,r2,k;
+	scanf("%I64d%I64d%I64d%I64d%I64d",&l1,&r1,&l2,&r2,&k);
+	if(r1 < l2 || r2 < l1) {
+		printf("0");
+		return 0;
+	}
+	long long ans;
+	if(l2 <= l1 && l1 <= r2 && r2 <= r1) {
+		ans = r2-l1+1;
+		if(l1 <= k && k <= r2) --ans;
+	}
+	else if(l1 <= l2 && l2 <= r1 && r1 <= r2) {
+		ans = r1-l2+1;
+		if(l2 <= k && k <= r1) --ans;
+	}
+	else if(l1 <= l2 && r2 <= r1) {
+		ans = r2-l2+1;
+		if(l2<=k && k <= r2) --ans;
+	}
+	else if(l2 <= l1 && r1 <= r2) {
+		ans = r1-l1+1;
+		if(l1 <= k && k <= r1) --ans;
+	}
+	printf("%I64d",ans);
 	return 0;
 }

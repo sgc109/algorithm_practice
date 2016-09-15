@@ -8,7 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-// #include <unordered_set>
+#include <unordered_set>
 #include <set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
@@ -31,10 +31,43 @@ const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
+int cnt[262144];
+multiset<int> ms[262144];
+int n;
+char in[30];
 int main() {
-	vector<pii> v;
-	v.pb(mp(1,2));
-	v.pb(mp(2,3));
-	printf("%d",lower_bound(v.begin(),v.end(),mp(1,3))-v.begin());
+	inp1(n);
+	getchar();
+	FOR(i,n){
+		gets(in);
+		int len = strlen(in);
+		int num=0;
+		int pos=0;
+		REP(i,2,len) {
+			if((in[i]-'0')%2==0) {
+				pos*=2;
+			}
+			else {
+				pos*=2;
+				pos+=1;
+			}
+			num*=10;
+			num+=in[i]-'0';
+		}
+
+		// printf("pos:%d, num:%d\n",pos,num);
+		if(in[0] == '+') {
+			ms[pos].insert(num);
+			++cnt[pos];
+		}
+		else if(in[0] == '-') {
+			ms[pos].erase(ms[pos].find(num));
+			--cnt[pos];
+		}
+		else if(in[0] == '?') {
+			printf("%d\n",cnt[pos]);
+		}
+	}
+	
 	return 0;
 }
