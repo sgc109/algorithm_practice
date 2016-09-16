@@ -34,8 +34,6 @@ const int MAX_N = 1000000;
 int n;
 vector<pii> pairs;
 vi ans;
-int check[500002];
-int checkCnt;
 int main() {
 	inp1(n);
 	FOR(i,2*n) {
@@ -51,12 +49,10 @@ int main() {
 		}
 	}
 
-	check[0] = check[1] = 1;
-	checkCnt = 2;
 	int pos = lower_bound(pairs.begin(),pairs.end(),mp(pairs[0].second,pairs[1].second)) - pairs.begin();
 	if(pos == pairs.size()) {
 		pos = lower_bound(pairs.begin(),pairs.end(),mp(pairs[1].second,pairs[0].second)) - pairs.begin();
-		if(pos == pairs.size() || check[pos] == 1) {
+		if(pos == pairs.size()) {
 			printf("-1");
 			return 0;
 		}

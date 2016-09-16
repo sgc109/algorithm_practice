@@ -32,5 +32,6 @@ const long long INFL = 0x3a3a3a3a3a3a3a3a;
 const int MAX_N = 1000000;
 
 int main() {
+	
 	return 0;
 }
