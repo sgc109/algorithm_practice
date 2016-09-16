@@ -29,9 +29,51 @@ typedef pair<int,int> pii;
 
 const int INF = 0x3a3a3a3a;
 const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 1000000;
+const int MAX_N = 100000;
 
+long long n,k;
+
+long long maxLen, maxNum;
+long long makeNum,sameCnt;
+long long useK;
+long long a[MAX_N];
+int l,r;
 int main() {
-	
+	scanf("%I64d%I64d",&n,&k);
+	FOR(i,n){
+		scanf("%I64d",a+i);
+	}
+	sort(a,a+n);
+
+	makeNum=a[0];
+	while(r<n) {
+		if(a[r] != makeNum) {
+			useK += sameCnt*(a[r]-makeNum);
+			makeNum = a[r];
+			if(k < useK) {
+				while(useK > k) {
+					useK -= makeNum-a[l];
+					--sameCnt;
+					++l;
+				}
+			}
+			++sameCnt;
+			if(maxLen<sameCnt) {
+				maxLen=sameCnt;
+				maxNum=makeNum;
+			}
+			++r;
+		}
+		else {
+			++sameCnt;
+			if(maxLen<sameCnt) {
+				maxLen=sameCnt;
+				maxNum=makeNum;
+			}
+			++r;
+		}
+		// printf("makeNum:%d, sameCnt:%d\n",makeNum,sameCnt);
+	}
+	printf("%I64d %I64d",maxLen,maxNum);
 	return 0;
 }

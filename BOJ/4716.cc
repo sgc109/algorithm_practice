@@ -71,8 +71,8 @@ int main() {
 				}
 				else {
 					totalCost += diffs[pos].first*(flowA-cntA);
-					flowA-=flowA-cntA;
 					flowB+=flowA-cntA;
+					flowA-=flowA-cntA;
 				}
 			}
 			else {
@@ -88,8 +88,8 @@ int main() {
 				}
 				else {
 					totalCost += diffs[pos].first*(flowB-cntB);
-					flowB-=flowB-cntB;
 					flowA+=flowB-cntB;
+					flowB-=flowB-cntB;
 				}
 			}
 		}

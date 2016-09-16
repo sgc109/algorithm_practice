@@ -8,8 +8,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-// #include <unordered_set>
 #include <set>
+// #include <unordered_set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
@@ -27,10 +27,11 @@ typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 
-const int INF = 0x3a3a3a3a;
-const long long INFL = 0x3a3a3a3a3a3a3a3a;
+const int INF = 0x3c3c3c3c;
+const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
 int main() {
+
 	return 0;
 }
