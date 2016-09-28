@@ -35,7 +35,33 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
+int partialSum[50009];
+int n;
+int A[50001];
+int limit;
+int dp[4][50004];
+int solve(int trainNum, int pos) {
+	if(pos>=n || trainNum >= 3) return 0;
+	int ret = 0;
+	int& cache1 = dp[trainNum+1][n<pos+limit?n:pos+limit];
+	if(cache1==-1) cache1=solve(trainNum+1,n<pos+limit?n:pos+limit);
+	ret = max(ret, partialSum[n<pos+limit?n:pos+limit]-partialSum[pos]+cache1);
+	int& cache2 = dp[trainNum][pos+1];
+	if(cache2==-1) cache2=solve(trainNum,pos+1);
+	ret = max(ret, cache2);
+
+	return ret;
+}
 int main() {
+	memset(dp,-1,sizeof(dp));
+	inp1(n);
+	FOR(i,n) {
+		inp1(A[i]);
+		partialSum[i+1] = partialSum[i]+A[i];
+	}
+
+	inp1(limit);
+	printf("%d",solve(0,0));
 
 	return 0;
 }

@@ -35,7 +35,20 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
+int n;
+int dp[1002];
+int A[1002];
 int main() {
-
+	memset(dp,0x3c,sizeof(dp));
+	inp1(n);
+	FOR(i,n)inp1(A[i]);
+	dp[0]=0;
+	REP(i,1,n) {
+		for(int j = 1; i-j >= 0 && j <= 100; ++j) {
+			if(A[i-j] >= j) dp[i] = min(dp[i],dp[i-j]+1);
+		}
+	}
+	if(dp[n-1] >= n) printf("-1");
+	else printf("%d",dp[n-1]);
 	return 0;
 }

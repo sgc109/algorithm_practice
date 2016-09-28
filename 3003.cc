@@ -24,8 +24,7 @@
 
 using namespace std;
 
-typedef long long ll;
-typedef pair<ll,ll> pll;
+typedef pair<long long, long long> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
@@ -35,7 +34,10 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
+int c[6] = {1,1,2,2,2,8};
 int main() {
-
+	int a[6];
+	FOR(i,6) inp1(a[i]);
+	FOR(i,6) printf("%d ",c[i]-a[i]);
 	return 0;
 }

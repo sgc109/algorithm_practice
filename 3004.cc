@@ -24,8 +24,7 @@
 
 using namespace std;
 
-typedef long long ll;
-typedef pair<ll,ll> pll;
+typedef pair<long long, long long> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
@@ -36,6 +35,8 @@ const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
 int main() {
-
+	int n;
+	inp1(n);
+	printf("%d",(1+(n/2))*(1+(n-(n/2))));
 	return 0;
 }

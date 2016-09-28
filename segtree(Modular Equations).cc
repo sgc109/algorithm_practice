@@ -24,8 +24,7 @@
 
 using namespace std;
 
-typedef long long ll;
-typedef pair<ll,ll> pll;
+typedef pair<long long, long long> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
@@ -36,6 +35,25 @@ const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
 int main() {
+	int a,b;
+	inp2(a,b);
+	if(a==b) {
+		printf("infinity");
+		return 0;
+	}
+
+	int cnt=0;
+	for(int i = 1; i*i <= a-b; ++i) {
+		if((a-b)%i==0) {
+			if(i*i==a-b && i > b) ++cnt;
+			else if((a-b)%i==0){
+				if(i>b) ++cnt;
+				if((a-b)/i>b) ++cnt;
+			}
+		}
+	}
+
+	printf("%d",cnt);
 
 	return 0;
 }

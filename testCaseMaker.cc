@@ -36,6 +36,12 @@ const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
 int main() {
-
+	freopen("input.txt","w",stdout);
+	int n,m;
+	n=200;m=40000;
+	printf("%d %d\n",n,m);
+	FOR(i,m){
+		printf("1 %d %d %d\n",n/2,n-1,n/2);
+	}
 	return 0;
 }

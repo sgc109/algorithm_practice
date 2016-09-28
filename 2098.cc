@@ -35,7 +35,31 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
+int n;
+int dist[16][16];
+int dp[16][1<<16];
+int start;
+int solve(int from, int visit) {
+	if(visit == (1<<n)-1) return dist[from][start] != 0 ? dist[from][start] : INF;
+	int ret=INF;
+	int unvisited = visit;
+	FOR(i,16) {
+		if(!(unvisited&1) && dist[from][i] != 0) {
+			int& cache = dp[i][visit|(1<<i)];
+			if(cache==-1) cache = solve(i,visit|(1<<i));
+			ret = min(ret, dist[from][i] + cache);
+		}
+		unvisited>>=1;
+	}
+	return ret;
+}
 int main() {
+	memset(dp,-1,sizeof(dp));
+	inp1(n);
+	FOR(i,n)FOR(j,n)inp1(dist[i][j]);
+	start=0;
+	int ans = solve(0,1);
+	printf("%d",ans);
 
 	return 0;
 }

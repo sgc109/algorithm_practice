@@ -14,7 +14,7 @@
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
-#define pb push_back
+#define pb emplace_back
 #define inp1(a) scanf("%d",&a)
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
@@ -42,42 +42,26 @@ struct SegTree{
 		lazy.resize(4*size);
 		init(0,size-1,1);
 	}
-	vi init(int nodeLeft, int nodeRight, int node) {
+	void init(int nodeLeft, int nodeRight, int node) {
 		if(nodeLeft == nodeRight) {
-			vi ret;
-			ret.pb(1);
-			ret.pb(0);
-			ret.pb(0);
-			return range3nK[node] = ret;
+			range3nK[node].pb(1);
+			range3nK[node].pb(0);
+			range3nK[node].pb(0);
+			return;
 		}
 
 		int nodeMid = (nodeLeft + nodeRight) >> 1;
 
-		vi l = init(nodeLeft, nodeMid, 2*node);
-		vi r = init(nodeMid+1, nodeRight, 2*node+1);
+		init(nodeLeft, nodeMid, 2*node);
+		init(nodeMid+1, nodeRight, 2*node+1);
 
-		vi ret(3);
-		ret[0] = l[0]+r[0];
-		ret[1] = l[1]+r[1];
-		ret[2] = l[2]+r[2];
-
-		return range3nK[node] = ret;
+		FOR(i,3) range3nK[node].pb(range3nK[2*node][i]+range3nK[2*node+1][i]);
 	}
 	int query(int nodeLeft, int nodeRight, int left, int right, int node) {
 		if(lazy[node] != 0) {
-			int rest = lazy[node]%3;	
-			if(rest==1) {
-				int tmp = range3nK[node][2];
-				range3nK[node][2] = range3nK[node][1];
-				range3nK[node][1] = range3nK[node][0];
-				range3nK[node][0] = tmp;
-			}
-			if(rest==2) {
-				int tmp = range3nK[node][2];
-				range3nK[node][2] = range3nK[node][0];
-				range3nK[node][0] = range3nK[node][1];
-				range3nK[node][1] = tmp;
-			}
+			int rest = lazy[node]%3;
+			int backup[3] = {range3nK[node][0],range3nK[node][1],range3nK[node][2]};
+			FOR(i,3) range3nK[node][i] = backup[(i-rest+3)%3];
 
 			if(nodeLeft != nodeRight) {
 				lazy[2*node]+=lazy[node];
@@ -97,21 +81,11 @@ struct SegTree{
 		return leftRange+rightRange;
 	}
 
-	vi update(int nodeLeft, int nodeRight, int left, int right, int node) {
+	void update(int nodeLeft, int nodeRight, int left, int right, int node) {
 		if(lazy[node] != 0) {
-			int rest = lazy[node]%3;	
-			if(rest==1) {
-				int tmp = range3nK[node][2];
-				range3nK[node][2] = range3nK[node][1];
-				range3nK[node][1] = range3nK[node][0];
-				range3nK[node][0] = tmp;
-			}
-			if(rest==2) {
-				int tmp = range3nK[node][2];
-				range3nK[node][2] = range3nK[node][0];
-				range3nK[node][0] = range3nK[node][1];
-				range3nK[node][1] = tmp;
-			}
+			int rest = lazy[node]%3;
+			int backup[3] = {range3nK[node][0],range3nK[node][1],range3nK[node][2]};
+			FOR(i,3) range3nK[node][i] = backup[(i-rest+3)%3];
 
 			if(nodeLeft != nodeRight) {
 				lazy[2*node]+=lazy[node];
@@ -121,36 +95,30 @@ struct SegTree{
 		}
 
 		if(left <= nodeLeft && nodeRight <= right) {
-			int tmp = range3nK[node][2];
-			range3nK[node][2] = range3nK[node][1];
-			range3nK[node][1] = range3nK[node][0];
-			range3nK[node][0] = tmp;
+			int backup[3] = {range3nK[node][0],range3nK[node][1],range3nK[node][2]};
+			FOR(i,3) range3nK[node][i] = backup[(i+2)%3];
 			if(nodeLeft != nodeRight) {
 				lazy[2*node] += 1;
 				lazy[2*node+1] += 1;
 			}
-			return range3nK[node];
+			return;
 		}
-		if(right < nodeLeft || nodeRight < left) return range3nK[node];
+		if(right < nodeLeft || nodeRight < left) return;
 
 		int nodeMid = (nodeLeft + nodeRight) >> 1;
 
-		vi l=update(nodeLeft,nodeMid,left,right,2*node);
-		vi r=update(nodeMid+1,nodeRight,left,right,2*node+1);
+		update(nodeLeft,nodeMid,left,right,2*node);
+		update(nodeMid+1,nodeRight,left,right,2*node+1);
 
-		vi ret(3);
-		ret[0] = l[0]+r[0];
-		ret[1] = l[1]+r[1];
-		ret[2] = l[2]+r[2];
-
-		return range3nK[node] = ret;
+		FOR(i,3) range3nK[node][i] = range3nK[2*node][i]+range3nK[2*node+1][i];
 	}
 
 	int query(int left, int right) {
 		return query(0,size-1,left,right,1);
 	}
-	vi update(int left, int right) {
-		return update(0,size-1,left,right,1);
+	void update(int left, int right) {
+		update(0,size-1,left,right,1);
+
 	}
 };
 

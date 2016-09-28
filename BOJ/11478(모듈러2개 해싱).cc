@@ -57,9 +57,7 @@ int main() {
 		}
 		
 		for(int i = len;;++i) {
-			// printf("Hash: %lld\n",val[0]*Hash[1]+val[1]);
 			if(!h.count(val[0]*Hash[1]+val[1])) {
-				// printf("pos: %d, size: %d\n",i-len,len);
 				h.insert(val[0]*Hash[1]+val[1]);
 				++cnt;
 			}

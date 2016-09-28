@@ -35,7 +35,37 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
-int main() {
+int dx[4] = {0,1,0,-1};
+int dy[4] = {1,0,-1,0};
+char S[1000];
 
+int main() {
+	int T;
+	inp1(T);
+	while(T--){
+		int maxX=0,minX=0;
+		int maxY=0,minY=0;
+		int curX=0,curY=0;
+		int dir=0;
+		scanf("%s",S);
+		int len  = strlen(S);
+		FOR(i,len){
+			if(S[i]=='L') dir = (dir+3)%4;
+			else if(S[i]=='R') dir = (dir+1)%4;
+			else if(S[i]=='F') {
+				curX+=dx[dir];
+				curY+=dy[dir];
+			}
+			else if(S[i]=='B') {
+				curX-=dx[dir];
+				curY-=dy[dir];
+			}
+			maxX = max(maxX, curX);
+			minX = min(minX, curX);
+			maxY = max(maxY, curY);
+			minY = min(minY, curY);
+		}
+		printf("%d\n",(maxX-minX)*(maxY-minY));
+	}
 	return 0;
 }

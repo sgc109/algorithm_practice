@@ -199,7 +199,7 @@ def main():
     username = 'sgc109'
     # sys.stdout.write(u'비밀번호: ')
     # password = getpass('')
-    password = 'gkdrhdeo1!@'
+    password = 'tkatjdwjswk1!@'
     if len(username) == 0:
         print u'아이디를 입력해 주세요'
         return

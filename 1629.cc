@@ -35,7 +35,15 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
-int main() {
+int A,B,C;
 
+long long powerN(int x, int n) {
+	if(n==0) return 1;
+	if(n%2==1) return (x*powerN(x,n-1))%C;
+	return (powerN(x,n/2)*powerN(x,n/2))%C;
+}
+int main() {
+	inp3(A,B,C);
+	printf("%lld",powerN(A,B));
 	return 0;
 }

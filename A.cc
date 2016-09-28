@@ -24,8 +24,7 @@
 
 using namespace std;
 
-typedef long long ll;
-typedef pair<ll,ll> pll;
+typedef pair<long long, long long> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
@@ -35,7 +34,22 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
+int arr[100];
 int main() {
+	int n;
+	inp1(n);
+	FOR(i,n) inp1(arr[i]);
+	if(n==1 && arr[0] != 0 && arr[0] != 15) {
+		printf("-1");
+		return 0;
+	}
+	if(arr[n-1] == 15 || arr[n-2] > arr[n-1] && arr[n-1] != 0) {
+		printf("DOWN");
+	}
+	else {
+		printf("UP");
+	}
+
 
 	return 0;
 }

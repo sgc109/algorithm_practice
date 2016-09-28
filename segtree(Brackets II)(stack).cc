@@ -8,9 +8,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-#include <set>
-#include <cmath>
-// #include <unordered_set>
+#include <set
+/>/ #include <unordered_set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
@@ -24,8 +23,7 @@
 
 using namespace std;
 
-typedef long long ll;
-typedef pair<ll,ll> pll;
+typedef pair<long long, long long> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
@@ -35,7 +33,46 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
-int main() {
+long long height;
 
+long long ans=0;
+char S[350005];
+int depth;
+int main() {
+	int t;
+	inp1(t);
+	getchar();
+	while(t--) {
+		stack<int> s;
+		height=1;
+		ans=0;
+		depth=0;
+		getchar();
+		gets(S);
+		
+		int len = strlen(S);
+		FOR(i,len) {
+			if(S[i] == '(') {
+				s.push(i);
+				height=1;
+				++depth;
+			}
+			else {
+				int p = s.top();
+				s.pop();
+				if(depth%2==1) {
+					long long added = (long long)(i-p)*height;
+					ans += added;
+				}
+				else {
+					long long added = (long long)(i-p)*height;
+					ans -= added;
+				}
+				++height;
+				--depth;
+			}
+		}
+		printf("%lld\n",ans);
+	}
 	return 0;
 }
