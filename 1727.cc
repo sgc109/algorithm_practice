@@ -34,9 +34,44 @@ typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 1001;
 
+
+vi A,B;
+vi boys,girls;
+int n,m;
+long long dp[MAX_N][MAX_N];
+
+long long solve(int posA, int posB){
+	if(posA == A.size()) return 0;
+	if(posB == B.size()) return INFL;
+
+	long long ret=INFL;
+
+	for(int i = posB; i < B.size(); ++i){
+		long long& cache = dp[posA+1][i+1];
+		if(cache == -1) cache = solve(posA+1,i+1);
+		ret = min(ret, abs(A[posA]-B[i])+cache);
+	}
+
+	return ret;
+}
 int main() {
-	printf("%lld %lld",(ll)pow(2,20),(ll)pow(3,20));
+	memset(dp,-1,sizeof(dp));
+	inp2(n,m);
+	boys.resize(n);
+	girls.resize(m);
+	FOR(i,n) inp1(boys[i]);
+	FOR(i,m) inp1(girls[i]);
+
+	if(n>=m) {
+		A=girls;
+		B=boys;
+	}
+	else {
+		A=boys;
+		B=girls;
+	}
+	printf("%lld", solve(0,0));
 	return 0;
 }

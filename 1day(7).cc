@@ -34,9 +34,41 @@ typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 102;
 
+vi adj[MAX_N];
+pii intervals[MAX_N];
+int nodeCnt;
+int n;
+int visited[MAX_N];
+void dfs(int here){
+	// printf("here:%d\n",here);
+	visited[here] = 1;
+	for(int& there : adj[here]){
+		if(!visited[there]) dfs(there);
+	}
+}
 int main() {
-	printf("%lld %lld",(ll)pow(2,20),(ll)pow(3,20));
+	inp1(n);
+	FOR(i,n){
+		int o,a,b;
+		inp3(o,a,b);
+		if(o==1){
+			intervals[nodeCnt++]=mp(a,b);
+			pii& newNode = intervals[nodeCnt-1];
+			FOR(i,nodeCnt-1){
+				pii& oldNode = intervals[i];
+				if(oldNode.first < newNode.first && newNode.first < oldNode.second || oldNode.first < newNode.second && newNode.second < oldNode.second) adj[nodeCnt-1].pb(i);
+				if(newNode.first < oldNode.first && oldNode.first < newNode.second || newNode.first < oldNode.second && oldNode.second < newNode.second) adj[i].pb(nodeCnt-1);
+			}
+		}
+		else{
+			--a;--b;
+			memset(visited,0,sizeof(visited));
+			dfs(a);
+			if(visited[b]) printf("YES\n");
+			else printf("NO\n");
+		}
+	}
 	return 0;
 }

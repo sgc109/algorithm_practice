@@ -30,13 +30,48 @@ typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
-typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 1000002;
+
+vi adj[MAX_N];
+int n;
+int ans;
+enum{DOMINATED=0,UNDOMINATED=1,DOMINATOR=2};
+int visited[MAX_N];
+
+char s[15000000];
+ 
+inline void init() { fread(s, 1, sizeof(s), stdin); }
+inline void readN(int &r)
+{
+    static char *p = s;
+    while (*p < 48) p++;
+    for (r = *p & 15; *++p & 16; r = r * 10 + (*p & 15));
+}
+
+int traversal(int here){
+	visited[here]=1;
+	int state = UNDOMINATED;
+	for(int& there : adj[here]){
+		if(visited[there] == 0 && traversal(there)==UNDOMINATED) state=DOMINATOR;
+	}
+	if(state==DOMINATOR) ++ans;
+	return state;
+}
 
 int main() {
-	printf("%lld %lld",(ll)pow(2,20),(ll)pow(3,20));
+	init();
+	readN(n);
+	FOR(i,n-1){
+		int a,b;
+		readN(a);
+		readN(b);
+		adj[a].pb(b);
+		adj[b].pb(a);
+	}
+	traversal(1);
+	printf("%d\n", ans);
 	return 0;
 }

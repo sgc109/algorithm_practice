@@ -36,7 +36,20 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
+int n;
 int main() {
-	printf("%lld %lld",(ll)pow(2,20),(ll)pow(3,20));
+	while(1){
+		if(inp1(n) == -1) break;
+		FOR(i,n){
+			int a,m;
+			scanf("%d: (%d) ",&a,&m);
+			printf("a:%d, m:%d\n",a,m);
+			FOR(j,m){
+				int b;
+				inp1(b);
+				printf("b:%d\n",b);
+			}
+		}
+	}
 	return 0;
 }

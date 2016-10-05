@@ -24,32 +24,22 @@
 
 using namespace std;
 
-typedef pair<long long, long long> pll;
+typedef long long ll;
+typedef pair<ll,ll> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
+typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
-int arr[100];
+int a[3];
 int main() {
-	int n;
-	inp1(n);
-	FOR(i,n) inp1(arr[i]);
-	if(n==1 && arr[0] != 0 && arr[0] != 15) {
-		printf("-1");
-		return 0;
-	}
-	if(arr[n-1] == 15 || arr[n-2] > arr[n-1] && arr[n-1] != 0) {
-		printf("DOWN");
-	}
-	else {
-		printf("UP");
-	}
-
-
+	FOR(i,3) inp1(a[i]);
+	sort(a,a+3);
+	printf("%d",a[2]-a[0]);
 	return 0;
 }

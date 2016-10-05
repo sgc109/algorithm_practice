@@ -34,9 +34,29 @@ typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 1000;
 
+int n,m;
+int len[MAX_N];
+int solve(int pos){
+	if(pos==n) return 0;
+	int ret = INF;
+	int charCnt = len[pos];
+	for(int i = pos+1; i <=n, charCnt <=m ; ++i){
+		ret = min(ret, (m-charCnt)*(m-charCnt)+solve(i));
+		if(i==n) {
+			ret=0;
+			break;
+		}
+		charCnt += len[i]+1;
+	}
+	return ret;
+}
 int main() {
-	printf("%lld %lld",(ll)pow(2,20),(ll)pow(3,20));
+	inp2(n,m);
+	FOR(i,n){
+		inp1(len[i]);
+	}
+	printf("%d",solve(0));
 	return 0;
 }

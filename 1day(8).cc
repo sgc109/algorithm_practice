@@ -34,9 +34,23 @@ typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 100002;
 
+int stairs[MAX_N];
+pii boxes[MAX_N];
+long long cur;
+int n,m;
+
+long long ans[MAX_N];
 int main() {
-	printf("%lld %lld",(ll)pow(2,20),(ll)pow(3,20));
+	inp1(n);
+	FOR(i,n) inp1(stairs[i]);
+	inp1(m);
+	FOR(i,m) {
+		inp2(boxes[i].first,boxes[i].second);
+		ans[i] = max(cur,(long long)stairs[boxes[i].first-1]);
+		cur=ans[i]+boxes[i].second;
+		printf("%lld\n",ans[i]);
+	}
 	return 0;
 }

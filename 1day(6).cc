@@ -34,9 +34,32 @@ typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 1002;
 
+int ans[MAX_N];
 int main() {
-	printf("%lld %lld",(ll)pow(2,20),(ll)pow(3,20));
+	int n,k,l,r,sall,sk;
+	inp3(n,k,l);
+	inp3(r,sall,sk);
+	FOR(i,k){
+		ans[i]=sk/k;
+	}
+	int rest = sk%k;
+	for(int i=0;i<k,rest>0;++i){
+		ans[i]++;
+		rest--;
+	}
+	if(n!=k){
+		rest = sall-sk;
+		REP(i,k,n+1){
+			ans[i]=rest/(n-k);
+		}
+		rest = rest%(n-k);
+		for(int i=k;i<n+1,rest>0;++i){
+			ans[i]++;
+			rest--;
+		}
+	}
+	FOR(i,n) printf("%d ",ans[i]);
 	return 0;
 }

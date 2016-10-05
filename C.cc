@@ -24,75 +24,79 @@
 
 using namespace std;
 
-typedef pair<long long, long long> pll;
+typedef long long ll;
+typedef pair<ll,ll> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
+typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 200004;
-int n,t;
-char S[MAX_N];
-int main() {
-	FILE *fp = fopen("output.txt","wb");
-	inp2(n,t);
-	scanf("%s",S);
-	int len = strlen(S);
-	bool findDot=false;
-	int start=-1;
-	int dotIndex;
-	FOR(i,len) {
-		if(S[i]=='.') {
-			dotIndex=i;
-			findDot=true;
-		}
-		if(findDot && S[i] >= '5') {
-			start = i;
-			break;
-		}
-	}
-	if(start == -1) {
-		fprintf(fp,"%s",S);
-		return 0;
-	}
-	int pos = start;
-	int carry=0;
+const int MAX_N = 1000000;
 
-	while(1) {
-		if(S[pos-1] == '.') {
-			carry=1;
+int change[2002][2002];
+int changed;
+pii arr[2002];
+int firstOrder[2002];
+int n,m;
+int limit;
+int main() {
+	inp2(n,m);
+	limit = n/m;
+	FOR(i,m+1){
+		arr[i].second = i;
+	}
+	FOR(i,n){
+		int tmp;
+		inp1(tmp);
+		firstOrder[i] = tmp;
+		if(tmp <= m) arr[tmp].first++;
+		else arr[0].first++;
+	}
+	sort(arr+1,arr+1+m);
+
+	while(arr[0].first > 0 && arr[1].first < limit) {
+		arr[1].first++;
+		arr[0].first--;
+		++changed;
+		change[0][arr[1].second]++;
+		sort(arr+1,arr+1+m);
+	}
+
+	while(arr[1].first < limit){
+		arr[1].first++;
+		arr[m].first--;
+		++changed;
+		change[arr[m].second][arr[1].second]++;
+		sort(arr+1,arr+1+m);
+	}
+
+	printf("%d %d\n",limit,changed);
+	FOR(i,n){
+		bool find = false;
+		if(firstOrder[i] > m) {
+			REP(j,1,m+1){
+				if(change[0][j]) {
+					printf("%d ",j);
+					change[0][j]--;
+					find=true;
+					break;
+				}
+			}
 		}
 		else {
-			++S[pos-1];
+			REP(j,1,m+1){
+				if(change[firstOrder[i]][j]) {
+					printf("%d ",j);
+					change[firstOrder[i]][j]--;
+					find=true;
+					break;
+				}
+			}
 		}
-		--pos;
-		--t;
-		if(t <= 0 || S[pos]=='.' || ('0' <= S[pos] && S[pos] < '5')) break;
+		if(!find) printf("%d ",firstOrder[i]);
 	}
-
-	if(S[pos]=='.') S[pos]=0;
-	else S[pos+1]=0;
-	
-	if(carry){
-		pos = dotIndex-1;
-		while(1){
-			if(S[pos] < '9') {
-				++S[pos];
-				break;
-			}
-			else {
-				S[pos]='0';
-			}
-			--pos;
-			if(pos < 0) {
-				fprintf(fp,"1");
-				break;
-			}
-		}
-	}	
-	fprintf(fp,"%s",S);		
-	
 	return 0;
 }

@@ -34,100 +34,85 @@ typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000002;
+const int MAX_N = 200002;
 
-int n;
-int adj[MAX_N][2];
+pii adj[MAX_N][2];
 int aMatch[MAX_N];
-int bMatch[MAX_N];
+int bMatch[2*MAX_N];
 int level[MAX_N];
-int used[MAX_N];
+int n;
 
-char s[15000000];
- 
-inline void init() { fread(s, 1, sizeof(s), stdin); }
-inline void readN(int &r)
-{
-    static char *p = s;
-    while (*p < 48) p++;
-    for (r = *p & 15; *++p & 16; r = r * 10 + (*p & 15));
-}
-
-void bfs() {
-	queue<int> q;
-	FOR(a,n){
-		if(!used[a]) {
+int bfs(int K){
+	QU q;
+	for(int a=1;a<=n;++a){
+		if(aMatch[a]==-1){
+			level[a]=0;
 			q.push(a);
-			level[a] = 0;
 		}
 	}
-	while(!q.empty()) {
+
+	while(!q.empty()){
 		int a = q.front();
 		q.pop();
-		for(int& b : adj[a]){
-			if(level[bMatch[b]] == -1) {
+		for(auto& p : adj[a]){
+			int b = p.first;
+			int c = p.second;
+			if(c > K) continue;
+			if(level[bMatch[b]] == -1){
 				level[bMatch[b]] = level[a] + 1;
-				q.push(bMatch[b]);
 			}
 		}
 	}
 }
-
-bool dfs(int a){
-	for(int b : adj[a]){
-		if(bMatch[b]==-1 || level[bMatch[b]] == level[a]+1 && dfs(bMatch[b])){
-			used[a] = 1;
-			bMatch[b] = a;
+bool dfs(int a, int K){
+	for(auto& p : adj[a]){
+		int b = p.first;
+		int c = p.second;
+		if(c > K) continue;
+		if(bMatch[b] == -1 || level[bMatch[b]] == level[a]+1 && dfs(bMatch[b],K)){
 			aMatch[a] = b;
+			bMatch[b] = a;
 			return true;
 		}
 	}
 	return false;
 }
-int bipartite() {
+int hopcroft(int K) {
 	int ret=0;
 	memset(aMatch,-1,sizeof(aMatch));
 	memset(bMatch,-1,sizeof(bMatch));
-	memset(used,0,sizeof(used));
-
 	while(1){
 		memset(level,-1,sizeof(level));
-
-		bfs();
-
-		int flow=0;
-
-		FOR(a,n){
-			if(!used[a] && dfs(a)) ++flow;
+		bfs(K);
+		int match=0;
+		for(int a=1;a<=n;++a){
+			if(aMatch[a] == -1 && dfs(a,K)) ++match;
 		}
-		if(flow==0) break;
-
-		ret += flow;
+		if(match==0) break;
+		ret+=match;
 	}
-
-
 	return ret;
 }
-
 int main() {
-	init();
-	readN(n);
-	FOR(i,n){
-		readN(adj[i][0]);
-		readN(adj[i][1]);
-		--adj[i][0];--adj[i][1];
+	inp1(n);
+	for(int i=1;i<=n;++i){
+		int f1,fk1,f2,fk2;
+		inp4(f1,fk1,f2,fk2);
+		adj[i][0]=mp(f1,fk1);
+		adj[i][1]=mp(f2,fk2);
 	}
 
-	int maxMatch = bipartite();
-
-	if(maxMatch != n) {
-		printf("-1\n");
+	int l=0,r=1e6+1;
+	while(l<r){
+		int mid=(l+r)>>1;
+		if(hopcroft(mid) == n) r=mid;
+		else l=mid+1;
+	}
+	if(l==1e6+1) {
+		printf("-1");
 		return 0;
 	}
-
-	FOR(i,n){
-		printf("%d\n",aMatch[i]+1);
-	}
+	printf("%d",l);
 
 	return 0;
 }

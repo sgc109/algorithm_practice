@@ -24,54 +24,54 @@
 
 using namespace std;
 
-typedef pair<long long, long long> pll;
+typedef long long ll;
+typedef pair<ll,ll> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
+typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 100004;
+const int MAX_N = 1000000;
 
+
+char S[300];
 int n;
-char S[MAX_N];
+int inParen;
+int cnt;
+int ansA;
+int ansB;
+
+bool isAlpha(char c){
+	if(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) return true;
+	else return false;
+}
 int main() {
 	inp1(n);
 	scanf("%s",S);
-	int ans = INF;
-	int r2b=0,b2r=0;
-	int bNow=1;
-	FOR(i,n) {
-		if(bNow){
-			if(S[i]=='r') ++r2b;
-		}
+	FOR(i,n){
+		if(isAlpha(S[i])) ++cnt;
 		else{
-			if(S[i]=='b') ++b2r;
+			if(cnt){
+				if(inParen){
+					++ansB;
+				}
+				else {
+					ansA = max(ansA,cnt);
+				}
+			}
+			if(S[i] == '(') inParen=1;
+			else if(S[i] == ')') inParen=0;
+			cnt=0;
 		}
-		bNow ^= 1;
 	}
-	// printf("r2b:%d, b2r:%d\n",r2b,b2r);
-	int tmp = r2b >= b2r ? b2r : r2b;
-	tmp += abs(r2b-b2r);
-	ans = min(ans,tmp);
-	r2b=0;
-	b2r=0;
-	bNow=0;
-	FOR(i,n) {
-		if(bNow){
-			if(S[i]=='r') ++r2b;
-		}
-		else{
-			if(S[i]=='b') ++b2r;
-		}
-		bNow ^= 1;
+	if(cnt){
+		ansA = max(ansA,cnt);
 	}
-	// printf("r2b:%d, b2r:%d\n",r2b,b2r);
-	tmp = r2b >= b2r ? b2r : r2b;
-	tmp += abs(r2b-b2r);
-	ans = min(ans,tmp);
 
-	printf("%d",ans);
+	printf("%d %d",ansA,ansB);
+
 	return 0;
 }

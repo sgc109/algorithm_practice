@@ -37,11 +37,10 @@ const int MAX_N = 1000000;
 
 int main() {
 	freopen("input.txt","w",stdout);
-	int n,m;
-	n=200;m=40000;
-	printf("%d %d\n",n,m);
-	FOR(i,m){
-		printf("1 %d %d %d\n",n/2,n-1,n/2);
+	int n=200000;
+	printf("%d\n",n);
+	FOR(i,n){
+		printf("%d 1000000 %d 1000000\n",2*i+1,2*i+2);
 	}
 	return 0;
 }
