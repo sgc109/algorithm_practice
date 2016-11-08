@@ -10,7 +10,7 @@
 #include <string>
 #include <set>
 #include <cmath>
-// #include <unordered_set>
+#include <unordered_set>
 // #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
@@ -20,7 +20,7 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
+// #define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
 
 using namespace std;
 
@@ -34,44 +34,36 @@ typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1001;
+const int MAX_N = 1000000;
 
+unordered_set<int> us;
+int n;
+vi v;
 
-vi A,B;
-vi boys,girls;
-int n,m;
-long long dp[MAX_N][MAX_N];
-
-long long solve(int posA, int posB){
-	if(posA == A.size()) return 0;
-	if(posB == B.size()) return INFL;
-
-	long long ret=INFL;
-
-	for(int i = posB; i < B.size(); ++i){
-		long long& cache = dp[posA+1][i+1];
-		if(cache == -1) cache = solve(posA+1,i+1);
-		ret = min(ret, abs(A[posA]-B[i])+cache);
+int gcd(int a, int b){
+	while(a&&b){
+		if(a<b) swap(a,b);
+		a%=b;
+		gcd(a,b);
 	}
-
-	return ret;
+	return a+b;
 }
 int main() {
-	memset(dp,-1,sizeof(dp));
-	inp2(n,m);
-	boys.resize(n);
-	girls.resize(m);
-	FOR(i,n) inp1(boys[i]);
-	FOR(i,m) inp1(girls[i]);
+	inp1(n);
+	int g; 
+	FOR(i,n){
+		int tmp;
+		inp1(tmp);
+		if(!us.count(tmp)){
+			v.pb(tmp);
+			us.insert(tmp);
+		}
+		if(i==0) g=tmp;
+		else g=gcd(g,tmp);
+	}
+	if(us.count(g)) printf("%d",g);
+	else printf("-1");
 
-	if(n>=m) {
-		A=girls;
-		B=boys;
-	}
-	else {
-		A=boys;
-		B=girls;
-	}
-	printf("%lld", solve(0,0));
+	
 	return 0;
 }

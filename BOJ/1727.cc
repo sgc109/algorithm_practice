@@ -24,32 +24,57 @@
 
 using namespace std;
 
-typedef pair<long long, long long> pll;
+typedef long long ll;
+typedef pair<ll,ll> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
+typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 4002;
+const int MAX_N = 1002;
 
-int dp[MAX_N][MAX_N];
-char s1[MAX_N],s2[MAX_N];
+
+vi A,B;
+vi boys,girls;
+int n,m;
+ll dp[MAX_N][MAX_N];
+
+ll solve(int posA, int posB){
+	if(posA == A.size()) return 0;
+	if(posB == B.size()) return INFL;
+
+	ll ret=INFL;
+
+	ll& cache1 = dp[posA][posB+1];
+	if(cache1 == -1) cache1 = solve(posA,posB+1);
+	ret = min(ret,cache1);
+	ll& cache2 = dp[posA+1][posB+1];
+	if(cache2==-1) cache2 = solve(posA+1,posB+1);
+	ret = min(ret,abs(A[posA]-B[posB])+cache2);
+
+	return ret;
+}
 int main() {
-	scanf("%s %s",s1,s2);
-	int len1 = strlen(s1);
-	int len2 = strlen(s2);
+	memset(dp,-1,sizeof(dp));
+	inp2(n,m);
+	boys.resize(n);
+	girls.resize(m);
+	FOR(i,n) inp1(boys[i]);
+	FOR(i,m) inp1(girls[i]);
 
-	int ans = 0;
-	FOR(i,len1){
-		FOR(j,len2){
-			if(s1[i]==s2[j]) {
-				dp[i][j] = (i==0||j==0 ? 0 : dp[i-1][j-1]) + 1;
-				ans = max(ans, dp[i][j]);
-			}
-		}
+	if(n>=m) {
+		A=girls;
+		B=boys;
 	}
-	printf("%d",ans);
+	else {
+		A=boys;
+		B=girls;
+	}
+	sort(A.begin(),A.end());
+	sort(B.begin(),B.end());
+	printf("%lld", solve(0,0));
 	return 0;
 }

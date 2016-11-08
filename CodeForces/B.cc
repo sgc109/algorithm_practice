@@ -24,32 +24,54 @@
 
 using namespace std;
 
-typedef pair<long long, long long> pll;
+typedef long long ll;
+typedef pair<ll,ll> pll;
 typedef vector<int> vi;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
+typedef queue<int> QU;
 
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 4002;
+const int MAX_N = 1000000;
 
-int dp[MAX_N][MAX_N];
-char s1[MAX_N],s2[MAX_N];
+
+char S[300];
+int n;
+int inParen;
+int cnt;
+int ansA;
+int ansB;
+
+bool isAlpha(char c){
+	if(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) return true;
+	else return false;
+}
 int main() {
-	scanf("%s %s",s1,s2);
-	int len1 = strlen(s1);
-	int len2 = strlen(s2);
-
-	int ans = 0;
-	FOR(i,len1){
-		FOR(j,len2){
-			if(s1[i]==s2[j]) {
-				dp[i][j] = (i==0||j==0 ? 0 : dp[i-1][j-1]) + 1;
-				ans = max(ans, dp[i][j]);
+	inp1(n);
+	scanf("%s",S);
+	FOR(i,n){
+		if(isAlpha(S[i])) ++cnt;
+		else{
+			if(cnt){
+				if(inParen){
+					++ansB;
+				}
+				else {
+					ansA = max(ansA,cnt);
+				}
 			}
+			if(S[i] == '(') inParen=1;
+			else if(S[i] == ')') inParen=0;
+			cnt=0;
 		}
 	}
-	printf("%d",ans);
+	if(cnt){
+		ansA = max(ansA,cnt);
+	}
+
+	printf("%d %d",ansA,ansB);
+
 	return 0;
 }

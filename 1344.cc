@@ -37,12 +37,38 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-set<int> s;
-multiset<int> ms;
+int notPrime[20];
+double probA, probB;
+double dp[20][20][20];
+int n;
+// round x 5 분 ~ round x 5 + 5 분 이고 현재 A팀과 B팀의 골넣은 횟수가 주어질때 최종적으로 A팀과 B팀중 적어도 한팀은 소수 개의 골을 기록할 확률
+double solve(int round, int cntA, int cntB){
+	if(round==n) return (!notPrime[cntA] || !notPrime[cntB]);
+	double& cache = dp[round][cntA][cntB];
+	if(cache != -1) return cache;
+	double ret=0;
+	ret += solve(round+1,cntA,cntB) * (1-probA) * (1-probB);
+	ret += solve(round+1,cntA,cntB+1) * (1-probA) * probB;
+	ret += solve(round+1,cntA+1,cntB) * probA * (1-probB);
+	ret += solve(round+1,cntA+1,cntB+1) * probA * probB;
+
+	return cache = ret;
+}
+
 int main() {
-	ms.insert(1);
-	ms.insert(1);
-	ms.erase(1);
-	printf("%d",ms.find(1)==ms.end());
+	FOR(i,20)FOR(j,20)FOR(k,20)dp[i][j][k]=-1;
+	n=18;
+	notPrime[0] = notPrime[1] = 1;
+	for(int i = 2; i * i <= n; ++i){
+		if(notPrime[i]) continue;
+		for(int j = 2*i; j <= n; j+=i){
+			notPrime[j] = 1;
+		}
+	}
+
+	scanf("%lf%lf",&probA,&probB);
+	probA /= 100;
+	probB /= 100;
+	printf("%lf",solve(0,0,0));
 	return 0;
 }

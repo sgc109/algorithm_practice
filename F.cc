@@ -20,7 +20,7 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
+// #define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
 
 using namespace std;
 
@@ -32,165 +32,106 @@ typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
+const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 200002;
+const int MAX_V = 10105;
 
-int parent[MAX_N];
-int depth[MAX_N];
-vi adj[MAX_N];
-int n,m;
-int s,t,ds,dt;
-int connected[MAX_N][2];
-vector<pii> ans;
+struct Edge{
+	int to, rev, cap,flow;
+};
+int n;
+vector<Edge> adj[MAX_V];
+int iter[MAX_V];
+int level[MAX_V];
+int DISH(int x){return 2+x;}
+int TIME(int x){return 2+n+x;}
 
-int find(int a){
-	if(parent[a]==a) return a;
-	return parent[a] = find(parent[a]);//
-}
-int merge(int a, int b){
-	int parentA = find(a);
-	int parentB = find(b);
-	if(parentA == parentB) return -1;
-	if(depth[parentA] < depth[parentB]) swap(parentA,parentB);
-
-	parent[parentB] = parentA;
-	if(depth[parentA] == depth[parentB]) depth[parentA]++;
-
-	return parentA;//
-}
-void isImpossible(){
-	if(ds <0 || dt<0) {
-		printf("No");
-		exit(0);
+void bfs(int source){
+	memset(level,-1,sizeof(level));
+	memset(iter,0,sizeof(iter));
+	QU q;
+	q.push(source);
+	level[source]=0;
+	while(!q.empty() && level[1] == -1){
+		int here = q.front();
+		q.pop();
+		for(auto edge : adj[here]){
+			// printf("from:%d, to:%d, cap:%d\n",here,edge.to,edge.cap-edge.flow);
+			if(edge.cap-edge.flow>0 && level[edge.to] == -1){
+				level[edge.to]=level[here]+1;
+				q.push(edge.to);
+			}
+		}
 	}
+}
+
+int dfs(int here, int f){
+	if(here==1) return f;
+	for(int& i = iter[here]; i < adj[here].size(); ++i){
+		Edge& uv = adj[here][i];
+		if(uv.cap-uv.flow>0 && level[uv.to]>level[here]) {
+			int minFlow = dfs(uv.to,min(f,uv.cap-uv.flow));
+			if(minFlow) {
+				uv.flow+=minFlow;
+				adj[uv.to][uv.rev].flow-=minFlow;
+				return minFlow;
+			}
+		}
+	}
+	return 0;
+}
+
+bool dinic(int k){
+	int totalFlow=0;
+	for(;;){
+		bfs(0);
+		if(level[1]==-1) break;
+		int minFlow;
+		while(minFlow = dfs(0,INF)){
+			totalFlow+=minFlow;
+		}
+		// printf("totalFlow:%d\n",totalFlow);
+	}
+	if(totalFlow<k*n) return false;
+	return true;
+}
+
+void init(){
+	FOR(i,MAX_V){
+		for(auto& edge : adj[i]){
+			edge.flow=0;
+		}
+	}
+}
+void addEdge(int u, int v, int cap){
+	adj[u].pb(Edge{v,(int)adj[v].size(),cap,0});
+	adj[v].pb(Edge{u,(int)adj[u].size()-1,0,0});
 }
 int main() {
-	inp2(n,m);
-	REP(i,1,n+1) {
-		parent[i]=i;
-		depth[i]=0;
-	}
-	FOR(i,m){
+	inp1(n);
+	FOR(i,n){
 		int a,b;
 		inp2(a,b);
-		adj[a].pb(b);
-		adj[b].pb(a);
+		REP(j,a,b){
+			addEdge(DISH(i),TIME(j),1);
+		}
+		addEdge(0,DISH(i),INF);
 	}
-	inp4(s,t,ds,dt);
-	REP(here,1,n+1){
-		if(here==s||here==t) continue;
-		for(int& there : adj[here]){
-			if(there==s||there==t) continue;
-			if(merge(here,there)!=-1){
-				ans.pb(mp(here,there));
-			}
-		}
+	FOR(i,10000){
+		addEdge(TIME(i),1,1);
 	}
-	// printf("%d %d\n",parent[s],parent[t]);
-	int ST[2] = {s,t};
-	FOR(i,2){
-		int here = ST[i];
-		for(int& there : adj[here]){
-			// printf("here:%d, there:%d\n",here,there);
-			int p = find(there);
-			connected[p][i]=there;
+	int lo=0,hi=10001;
+	while(lo<hi){
+		// printf("lo:%d, hi:%d\n",lo,hi);
+		int mid=(lo+hi)>>1;
+		FOR(i,n){
+			adj[0][i].cap=mid;
 		}
+		if(!dinic(mid)) hi=mid;
+		else lo=mid+1;		
+		init();
 	}
-	// printf("connected[s][t]:%d\n",connected[s][t]);
-
-	bool found=false;
-	REP(here,1,n+1){
-		if(here==s||here==t) continue;
-		int p = find(here);
-		if(connected[p][0] > 0 && connected[p][1] > 0) {
-			ds--;
-			dt--;
-			ans.pb(mp(connected[p][0],s));
-			ans.pb(mp(connected[p][1],t));
-			connected[p][0]=0;
-			connected[p][1]=0;
-			found=true;
-			break;
-		}
-	}
-	queue<pii> hanged;
-	if(found){
-		REP(here,1,n+1){
-			if(here==s||here==t) continue;
-			int p = find(here);
-			if(connected[p][0] > 0 && connected[p][1] > 0){
-				hanged.push(mp(connected[p][0],connected[p][1]));
-				connected[p][0] = 0;
-				connected[p][1] = 0;
-			}
-			else {
-				if(connected[p][0] > 0){
-					ds--;
-					ans.pb(mp(connected[p][0],s));
-					connected[p][0] = 0;
-				}
-				else if(connected[p][1] > 0){
-					dt--;
-					ans.pb(mp(connected[p][1],t));
-					connected[p][1] = 0;
-				}
-					// printf("1\n");
-				isImpossible();
-					// printf("2\n");
-			}
-		}
-		//printf("7\n");
-		if(ds+dt < hanged.size()) {
-			printf("No");
-			return 0;
-		}
-		//printf("8\n");
-		while(ds > 0 && !hanged.empty()) {
-			ans.pb(mp(hanged.front().first,s));
-			hanged.pop();
-			ds--;
-		}
-		while(dt > 0 && !hanged.empty()) {
-			ans.pb(mp(hanged.front().second,t));
-			hanged.pop();
-			dt--;
-		}
-	}
-	else {
-		// printf("11\n");
-		if(connected[s][1] == 0 && connected[t][0] == 0) {
-			// printf("%d %d\n",s,t);
-			printf("No");
-			return 0;	
-		}
-		// printf("12\n");
-		REP(here,1,n+1){
-			if(here==s||here==t) continue;
-			int p = find(here);
-			if(connected[p][0] > 0){
-				ds--;
-				ans.pb(mp(connected[p][0],s));
-				connected[p][0] = 0;
-			}
-			else if(connected[p][1] > 0){
-				dt--;
-				ans.pb(mp(connected[p][1],t));
-				connected[p][1] = 0;
-			}
-			isImpossible();
-		}
-		ans.pb(mp(s,t));
-		ds--;dt--;
-		isImpossible();
-	}
-	if(ans.size() != n-1) {
-		printf("No");
-		return 0;
-	}
-	printf("Yes\n");
-	FOR(i,ans.size()){
-		printf("%d %d\n",ans[i].first,ans[i].second);
-	}
+	printf("%d\n",(hi-1)*n);
 	return 0;
 }

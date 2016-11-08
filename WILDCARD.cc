@@ -32,17 +32,55 @@ typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
-const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-set<int> s;
-multiset<int> ms;
+int dp[MAX_N][MAX_N];
+char strA[MAX_N];
+char strB[MAX_N];
+int lenA, lenB;
+int n;
+int solve(int posA, int posB){
+	if(posA==lenA && posB==lenB) return 1;
+	if(posA==lenA) return 0;
+	if(posB==lenB) {
+		if(strA[posA]=='*') return solve(posA+1,posB);
+		else return 0;
+	}
+
+	int& cache = dp[posA][posB];
+	if(cache != -1) return cache;
+	
+	int ret=0;
+	if(strA[posA]=='*'){
+		ret |= solve(posA+1,posB);
+		ret |= solve(posA,posB+1);
+	}
+	else if(strA[posA]=='?') ret |= solve(posA+1,posB+1);
+	else if(strA[posA]==strB[posB]) ret |= solve(posA+1,posB+1);
+	return cache = ret;
+}
+
 int main() {
-	ms.insert(1);
-	ms.insert(1);
-	ms.erase(1);
-	printf("%d",ms.find(1)==ms.end());
+	int T;
+	inp1(T);
+	while(T--){
+		scanf("%s",strA);
+		lenA = strlen(strA);
+		inp1(n);
+		vector<string> v;
+		while(n--){
+			scanf("%s",strB);
+			lenB = strlen(strB);
+			memset(dp,-1,sizeof(dp));
+			if(solve(0,0)) v.pb(strB);
+		}
+		sort(v.begin(),v.end());
+		FOR(i,v.size()){
+			cout << v[i];
+			printf("\n");
+		}
+	}
 	return 0;
 }

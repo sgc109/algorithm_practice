@@ -20,7 +20,7 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
+// #define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
 
 using namespace std;
 
@@ -32,46 +32,50 @@ typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
+const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 100002;
 
+int cnt[MAX_N];
+int f[MAX_N];
+int b[MAX_N];
+vector<pii> sorted;
 
-char S[300];
-int n;
-int inParen;
-int cnt;
-int ansA;
-int ansB;
-
-bool isAlpha(char c){
-	if(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) return true;
-	else return false;
+void NO(){
+	printf("Impossible");
+	exit(0);
 }
 int main() {
-	inp1(n);
-	scanf("%s",S);
-	FOR(i,n){
-		if(isAlpha(S[i])) ++cnt;
-		else{
-			if(cnt){
-				if(inParen){
-					++ansB;
-				}
-				else {
-					ansA = max(ansA,cnt);
-				}
-			}
-			if(S[i] == '(') inParen=1;
-			else if(S[i] == ')') inParen=0;
-			cnt=0;
+	int n,m;
+	inp2(n,m);
+	FOR(i,n) {
+		inp1(f[i]);
+		cnt[f[i]]++;
+		sorted.pb(mp(f[i],i));
+	}
+	sort(sorted.begin(),sorted.end());
+	bool amb = false;
+	vi ans;
+	FOR(i,m) {
+		inp1(b[i]);
+		if(cnt[b[i]]==0) NO();
+		else if(cnt[b[i]]>1) amb=true;
+		else {
+			int pos = lower_bound(sorted.begin(),sorted.end(),mp(b[i],-1))-sorted.begin();
+			ans.pb(sorted[pos].second+1);
 		}
 	}
-	if(cnt){
-		ansA = max(ansA,cnt);
+	if(amb) {
+		printf("Ambiguity");
+		return 0;
 	}
+	printf("Possible\n");
+	FOR(i,ans.size()){
+		printf("%d ",ans[i]);
+	}
+	
 
-	printf("%d %d",ansA,ansB);
 
 	return 0;
 }

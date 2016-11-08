@@ -32,17 +32,48 @@ typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
-const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
+const int MAX_N = 10002;
+const int MAX_M = 500002;
 
-set<int> s;
-multiset<int> ms;
+
+int n,m,q;
+ll maxBand[MAX_N];
 int main() {
-	ms.insert(1);
-	ms.insert(1);
-	ms.erase(1);
-	printf("%d",ms.find(1)==ms.end());
+	// freopen("output.txt","w",stdout);
+	int T;
+	inp1(T);
+	while(T--){
+		memset(maxBand,-1,sizeof(maxBand));
+		pair<ll,pii> edges[MAX_M];
+		inp2(n,m);
+		FOR(i,m){
+			int a,b;
+			ll c;
+			inp2(a,b);
+			scanf("%lld",&c);
+			--a;--b;
+			edges[i] = mp(-c,mp(a,b));
+		}
+		sort(edges,edges+m);
+		FOR(i,m){
+			int a = edges[i].second.first;
+			int b = edges[i].second.second;
+			ll c = -edges[i].first;
+			// printf("a:%d, b:%d, c:%d\n",a,b,c);
+			maxBand[a] = max(maxBand[a], c);
+			maxBand[b] = max(maxBand[b], c);
+		}
+		inp1(q);
+		ll ans=0;
+		FOR(i,q){
+			int a,b;
+			inp2(a,b);
+			--a;--b;
+			ans+=min(maxBand[a],maxBand[b]);
+		}
+		printf("%lld\n",ans);
+	}
 	return 0;
 }

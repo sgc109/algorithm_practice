@@ -35,14 +35,49 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
+const int MAX_N = 52;
+const int MAX_D = 102;
 
-set<int> s;
-multiset<int> ms;
+double dp[MAX_N][MAX_D];
+int N,D,degree[MAX_N];
+int adj[MAX_N][MAX_N];
+int start;
+double prob(int target, int n){
+	if(n==0) return start==target;
+	double& cache = dp[target][n];
+	if(cache != -1) return cache;
+	double ret=0;
+	FOR(i,N){
+		if(!adj[target][i]) continue;
+		ret += (double)1/degree[i]*prob(i,n-1);
+	}
+	return cache=ret;
+}
 int main() {
-	ms.insert(1);
-	ms.insert(1);
-	ms.erase(1);
-	printf("%d",ms.find(1)==ms.end());
+	int T;
+	inp1(T);
+	while(T--){
+		memset(degree,0,sizeof(degree));
+		inp3(N,D,start);
+		FOR(i,N){
+			FOR(j,N){
+				inp1(adj[i][j]);
+				if(adj[i][j]) degree[i]++;
+			}
+		}
+		int c;
+		inp1(c);
+		FOR(i,c){
+			FOR(i,MAX_N){
+				FOR(j,MAX_D){
+					dp[i][j]=-1;
+				}
+			}
+			int target;
+			inp1(target);
+			printf("%.8lf ",prob(target,D));
+		}
+		printf("\n");
+	}
 	return 0;
 }
