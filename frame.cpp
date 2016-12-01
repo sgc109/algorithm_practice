@@ -20,13 +20,13 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-// #define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
 
 using namespace std;
 
 typedef long long ll;
 typedef pair<ll,ll> pll;
 typedef vector<int> vi;
+typedef vector<ll> vl;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;

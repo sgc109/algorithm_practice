@@ -32,71 +32,68 @@ typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
+const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 52;
-const int MAX_I = 1002;
+const int MAX_N = 100002;
 
-int matchN[MAX_N];
-int notPrime[MAX_I];
-int arr[MAX_N];
+char Rank[MAX_N];
+int dist[MAX_N];
+int parent[MAX_N];
+int maxD;
+int maxI;
+vi adj[MAX_N];
 int n;
-int with;
-int visited[MAX_N];
 
-void figurePrime(){
-	notPrime[2] = 0;
-	for(int i = 2; i*i < MAX_I; ++i){
-		if(notPrime[i]) continue;
-		for(int j = 2*i; j < MAX_I; j+=i){
-			notPrime[j]=1;
+void NO(){
+	printf("Impossible!");
+	exit(0);
+}
+void dfs(int here, int dad){
+	for(int there : adj[here]){
+		if(there==dad || Rank[there]!=0) continue;
+		parent[there] = here;
+		dist[there] = dist[here]+1;
+		if(dist[there] > maxD){
+			maxD = dist[there];
+			maxI = there;
 		}
+		dfs(there,here);
 	}
 }
-
-bool dfs(int here){
-	if(visited[here]) return false;
-	visited[here] = 1;
-	FOR(i,n){
-		if(i==0 || i==with || i==here) continue;
-		if(!notPrime[arr[here]+arr[i]]){
-			if(matchN[i]==-1 || dfs(matchN[i])){
-				matchN[here] = i;
-				matchN[i] = here;
-				return true;
-			}
-		}
+void solve(int start, char alpha){
+	if(alpha>'Z') NO();
+	maxD=0;
+	maxI=start;
+	dist[start]=0;
+	dfs(start,-1);
+	maxD=0;
+	dist[maxI]=0;
+	dfs(maxI,-1);
+	int r=maxD/2;
+	int c=maxI;
+	while(r--) c=parent[c];
+	// printf("center:%d, 2*r:%d\n",c,maxD);
+	Rank[c]=alpha;
+	for(int child : adj[c]){
+		if(Rank[child]!=0) continue;
+		solve(child,alpha+1);
 	}
-	return false;
-}
-
-int bipartite(){
-	int ret=0;
-	memset(matchN,-1,sizeof(matchN));
-	FOR(i,n){
-		if(i==0 || i==with) continue;
-		memset(visited,0,sizeof(visited));
-		if(dfs(i)) ++ret;
-	}
-	return ret;
 }
 
 int main() {
+	memset(Rank,0,sizeof(Rank));
 	inp1(n);
+	FOR(i,n-1){
+		int a,b;
+		inp2(a,b);
+		a--;b--;
+		adj[a].pb(b);
+		adj[b].pb(a);
+	}
+	solve(0,'A');
 	FOR(i,n){
-		inp1(arr[i]);
+		printf("%c ",Rank[i]);
 	}
-	figurePrime();
-	int cnt=0;
-	REP(i,1,n){
-		if(notPrime[arr[0]+arr[i]]) continue;
-		with=i;
-		if(bipartite()==n/2-1){
-			++cnt;
-			printf("%d ",arr[i]);
-		}
-	}
-	if(!cnt) printf("-1");
-
 	return 0;
 }

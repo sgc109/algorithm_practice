@@ -38,14 +38,9 @@ const int MAX_N = 1000000;
 int main() {
 	freopen("input.txt","w",stdout);
 	
-	int n = 200000;
-	int m = 199999;
-	printf("%d %d\n",n,m);
-	FOR(i,n){
-		printf("%d %d\n",2*i+1,2*i+2);
-	}
-	FOR(i,m){
-		printf("%d ",1);
+	printf("2000 1\n");
+	REP(i,1,2000){
+		printf("%d %d\n",i,i+1);
 	}
 	
 	return 0;

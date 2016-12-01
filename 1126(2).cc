@@ -1,3 +1,4 @@
+#pragma comment(linker, "/STACK:2000000")
 #include <iostream>
 #include <cstdio>
 #include <vector>
@@ -11,7 +12,7 @@
 #include <set>
 #include <cmath>
 // #include <unordered_set>
-#include <map>
+// #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -35,24 +36,26 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000002;
+const int MAX_N = 52;
+const int MAX_D = 500010;
 
-ll fibo[MAX_N];
+int dp[MAX_N][MAX_D];
+int n;
+int blocks[MAX_N];
+int solve(int pos, int diff){
+	if(pos==n) return (!diff?0:-INF);
+	int& cache = dp[pos][diff];
+	if(cache!=-1) return cache;
+	int ret = max(blocks[pos]+solve(pos+1,diff+blocks[pos]),(diff<blocks[pos]?abs(diff-blocks[pos]):0)+solve(pos+1,abs(diff-blocks[pos])));
+	ret = max(ret,solve(pos+1,diff));
+	return cache = ret;
+}
 int main() {
-	ll n;
-	scanf("%lld",&n);
-	fibo[1]=2;
-	fibo[2]=3;
-	for(int i=3;fibo[i-1]<1000000000000000010L;i++){
-		fibo[i]=fibo[i-2]+fibo[i-1];
-	}
-	int i;
-	for(i = 1; fibo[i]<=n; i++){
-
-	}
-	printf("%d",i-1);
-
-
-
+	memset(dp,-1,sizeof(dp));
+	inp1(n);
+	FOR(i,n) inp1(blocks[i]);
+	int ans = solve(0,0);
+	if(ans<=0) printf("-1");
+	else printf("%d",ans);
 	return 0;
 }

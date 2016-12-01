@@ -35,27 +35,45 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 400000002;
+const int MAX_N = 1003;
 
-int notPrime[MAX_N];
-
+int leftCount[MAX_N][MAX_N];
+int upCount[MAX_N][MAX_N];
+char map[MAX_N][MAX_N];
+int dp[MAX_N][MAX_N];
+int n,m;
 int main() {
-	int n=MAX_N-2;
-	for(int i=2; i*i<=n; i++){
-		if(notPrime[i]) continue;
-		for(int j=i*2;j<=n;j+=i){
-			notPrime[j]=1;
+	memset(leftCount,0,sizeof(leftCount));
+	memset(upCount,0,sizeof(upCount));
+	memset(dp,0,sizeof(dp));
+	inp2(n,m);
+	FOR(i,n)scanf("%s",map[i]);
+	// FOR(i,n)printf("%s\n",map[i]);
+	int ans=0;
+	// FOR(i,n){
+	// 	FOR(j,m){
+	// 		if(map[i][j]=='0') continue;
+	// 		upCount[i][j]=leftCount[i][j]=1;
+	// 		if(j!=0) leftCount[i][j]+=leftCount[i][j-1];
+	// 		if(i!=0) upCount[i][j]+=upCount[i-1][j];
+	// 	}
+	// }
+	
+	// FOR(i,n){
+	// 	FOR(j,m){
+	// 		dp[i][j]=min((i==0||j==0?1:dp[i-1][j-1]+1),min(upCount[i][j],leftCount[i][j]));
+	// 		ans = max(ans, dp[i][j]);
+	// 	}
+	// }
+	FOR(i,n){
+		FOR(j,m){
+			if(map[i][j]=='0') continue;
+			dp[i][j]=1;		
+			if(i&&j) dp[i][j]=min(dp[i-1][j-1],min(dp[i-1][j],dp[i][j-1]))+1;
+			ans = max(ans, dp[i][j]);
 		}
 	}
-	int dist=0;
-	int prev=0;
-	for(int i=2; i<n;i++){
-		if(!notPrime[i]) {
-			dist=max(dist,i-prev);
-			prev=i;
-		}
-	}
-	printf("%d",dist);
+	printf("%d",ans*ans);
 
 	return 0;
 }

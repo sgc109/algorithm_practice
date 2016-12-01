@@ -11,7 +11,7 @@
 #include <set>
 #include <cmath>
 // #include <unordered_set>
-#include <map>
+// #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -35,24 +35,30 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000002;
+const int MAX_N = 2002;
 
-ll fibo[MAX_N];
+int dp[MAX_N][MAX_N];
+int n,m;
+int arr[MAX_N];
+int solve(int l, int r){
+	int& cache = dp[l][r];
+	if(l==r) return cache=1;
+	if(l+1==r) return cache=(arr[l]==arr[r]);
+	if(cache!=-1) return cache;
+	cache = solve(l+1,r-1)&&(arr[l]==arr[r]);
+}
 int main() {
-	ll n;
-	scanf("%lld",&n);
-	fibo[1]=2;
-	fibo[2]=3;
-	for(int i=3;fibo[i-1]<1000000000000000010L;i++){
-		fibo[i]=fibo[i-2]+fibo[i-1];
+	memset(dp,-1,sizeof(dp));
+	inp1(n);
+	FOR(i,n) inp1(arr[i]);
+	FOR(i,n) solve(0,i);
+	FOR(i,n) solve(i,n-1);
+	inp1(m);
+	FOR(i,m){
+		int a,b;
+		inp2(a,b);
+		--a;--b;
+		printf("%d\n",dp[a][b]);
 	}
-	int i;
-	for(i = 1; fibo[i]<=n; i++){
-
-	}
-	printf("%d",i-1);
-
-
-
 	return 0;
 }

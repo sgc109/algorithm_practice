@@ -27,45 +27,30 @@ using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
 typedef vector<int> vi;
+typedef vector<ll> vl;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
+const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 1002;
 
-int arr[MAX_N];
-int parent[MAX_N];
-int index[MAX_N];
-int C[MAX_N];
-int n;
-
+int cnt[MAX_N];
 int main() {
-	inp1(n);
+	int k,n;
+	inp2(n,k);
 	FOR(i,n){
-		inp1(arr[i+1]);
+		int a;
+		inp1(a);
+		cnt[a]++;
 	}
-	int maxLen=0,maxI;
-	REP(i,1,n+1){
-		int tmp = lower_bound(C+1,C+maxLen+1,arr[i])-C;
-		if(maxLen<tmp){
-			maxLen=tmp;
-			maxI=i;
-		}
-		C[tmp]=arr[i];
-		index[tmp]=i;
-		parent[i]=index[tmp-1];
+	int ans=0;
+	FOR(i,MAX_N){
+		ans = max(ans,cnt[i]%k);
 	}
-	vi ans;
-	while(parent[maxI]!=maxI){
-		ans.pb(arr[maxI]);
-		maxI = parent[maxI];
-	}
-	reverse(ans.begin(),ans.end());
-	FOR(i,ans.size()){
-		printf("%d ",ans[i]);
-	}
+	printf("%d",ans);
 	return 0;
 }

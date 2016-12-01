@@ -37,63 +37,68 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 100002;
 
-int depth[MAX_N];
-int parent[MAX_N][18];
+int n;
+int size[MAX_N]; // i번 노드를 루트로 갖는 서브트리의 노드수
+int Rank[MAX_N];
+int centroid;
 vi adj[MAX_N];
-int N,M;
-void dfs(int here){
-	for(int i=1; (1<<i)<=depth[here]; ++i){
-		parent[here][i] = parent[parent[here][i-1]][i-1];
-	}
 
+void NO(){
+	printf("Impossible!");
+	exit(0);
+}
+
+int getSize(int here, int parent){
+	// printf("here:%d\n",here);
+	size[here]=1;
 	for(int there : adj[here]){
-		if(depth[there]!=-1) continue;
-		depth[there] = depth[here] + 1;
-		parent[there][0] = here;
-		dfs(there);
+		if(Rank[there]!=0 || there==parent) continue;
+		size[here] += getSize(there,here);
+	}
+	return size[here];
+}
+void dfs(int here, int total, int parent){
+	int maxSize=-1;
+	for(int there : adj[here]){
+		if(Rank[there]!=0 || there==parent) continue;
+		maxSize = max(maxSize, size[there]);
+	}
+	maxSize = max(maxSize, total-size[here]);
+	if(maxSize <= total/2) {
+		centroid=here;
+		return;
+	}
+	for(int there : adj[here]){
+		if(Rank[there]!=0 || there==parent) continue;
+		dfs(there,total,here);
 	}
 }
 
-int lca(int a, int b){
-	if(a==b) return a;
-	if(depth[a] < depth[b]) swap(a,b);
-	for(int i = 17;i>=0;--i){
-		if(depth[a]-depth[b] >= (1<<i)){
-			a = parent[a][i];
-		}
+void solve(int root, char alpha){
+	if(alpha>'Z') NO();
+	getSize(root,-1);
+	int total = size[root];
+	dfs(root, total, -1);
+	Rank[centroid]=alpha;
+	// printf("root:%d, centroid:%d\n",root+1,centroid+1);
+	for(int there : adj[centroid]){
+		if(Rank[there]!=0) continue;
+		solve(there, alpha+1);
 	}
-	if(a==b) return a;
-
-	for(int i = 17; i >= 0; --i){
-		if(parent[a][i]!=parent[b][i]){
-			a = parent[a][i];
-			b = parent[b][i];
-		}
-	}
-	if(a!=b) return parent[a][0];
-	return a;
 }
 int main() {
-	memset(depth,-1,sizeof(depth));
-	memset(parent,-1,sizeof(parent));
-	int start = 0;
-	depth[start] = 0;
-
-	inp1(N);
-	FOR(i,N-1){
+	memset(Rank,0,sizeof(Rank));
+	inp1(n);
+	FOR(i,n-1){
 		int a,b;
 		inp2(a,b);
 		--a;--b;
 		adj[a].pb(b);
 		adj[b].pb(a);
 	}
-	dfs(start);
-	inp1(M);
-	while(M--){
-		int a,b;
-		inp2(a,b);
-		--a;--b;
-		printf("%d\n", lca(a,b)+1);
+	solve(0,'A');
+	FOR(i,n){
+		printf("%c ",Rank[i]);
 	}
-	return 0;	
+	return 0;
 }

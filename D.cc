@@ -20,13 +20,13 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-// #define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
 
 using namespace std;
 
 typedef long long ll;
 typedef pair<ll,ll> pll;
 typedef vector<int> vi;
+typedef vector<ll> vl;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
@@ -35,34 +35,25 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
+const int MAX_N = 100000;
 
-vector<pll> ans;
-
+bool isPrime(ll n){
+	if(n==2) return true;
+	for(int i=2; i*i <= n; i++){
+		if(n%i==0) return false;
+	}
+	return true;
+}
 int main() {
-	ll x;
-	scanf("%lld",&x);
-	int sum=0;
-	ll i;
-	for(i = 1; i <= 1500000; ++i){
-		sum+=i*i;
-		if(x<=sum) break;
+	ll n;
+	scanf("%lld",&n);
+	if(isPrime(n)) printf("1");
+	else if(n%2==0||isPrime(n-2)) printf("2");
+	else {
+		printf("3");
 	}
-	ll m = i;
-	for(ll c = 1; c < m; ++c){
-		double d = (x+((((ll)1)<<(c-1)))-(c==1))*2/(c*(c+1));
-		if(d == (double)(ll)d) {
-			ans.pb(mp(c,(ll)d));
-		}
-	}
-	printf("%d\n",ans.size()*2+(x==sum));
-	FOR(i,ans.size()){
-		printf("%lld %lld\n",ans[i].first,ans[i].second);
-	}
-	if(x==sum) printf("%lld %lld\n",m,m);
-	FOR(i,ans.size()){
-		printf("%lld %lld\n",ans[ans.size()-i-1].second,ans[ans.size()-i-1].first);
-	}
+
+
 
 	return 0;
 }

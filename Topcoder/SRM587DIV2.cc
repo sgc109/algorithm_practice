@@ -32,71 +32,46 @@ typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
+const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 52;
-const int MAX_I = 1002;
+const int MAX_N = 102;
 
-int matchN[MAX_N];
-int notPrime[MAX_I];
-int arr[MAX_N];
-int n;
-int with;
-int visited[MAX_N];
+string canTransform(string from, string to){
+	int pos = 0;
+	FOR(i,to.size()){
+		if(pos==from.size()) break;
+		if(to[i]==from[pos]) ++pos;
+		else if(to[i]!='z') return "No";
+	}
+	if(pos==from.size()) return "Yes";
+	return "No";
+}
 
-void figurePrime(){
-	notPrime[2] = 0;
-	for(int i = 2; i*i < MAX_I; ++i){
-		if(notPrime[i]) continue;
-		for(int j = 2*i; j < MAX_I; j+=i){
-			notPrime[j]=1;
+int furthest(int n, int broke){
+	int sum=0;
+	int i;
+	for(i = 1;; ++i){
+		sum += i;
+		if(sum >= broke) break;
+	}
+	if(sum==broke && i<=n) return n*(n+1)/2-1;
+	return n*(n+1)/2;
+}
+
+string isColorable(vector<string> vs){
+	int c = vs[0].size();
+	int r = vs.size();
+	REP(i,1,r){
+		REP(j,1,c){
+			int same=(vs[i-1][j-1]==vs[i][j-1]);
+			if(same && vs[i-1][j]!=vs[i][j]) return "No";
+			else if(!same && vs[i-1][j]==vs[i][j]) return "No";
 		}
 	}
+	return "Yes";
 }
-
-bool dfs(int here){
-	if(visited[here]) return false;
-	visited[here] = 1;
-	FOR(i,n){
-		if(i==0 || i==with || i==here) continue;
-		if(!notPrime[arr[here]+arr[i]]){
-			if(matchN[i]==-1 || dfs(matchN[i])){
-				matchN[here] = i;
-				matchN[i] = here;
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-int bipartite(){
-	int ret=0;
-	memset(matchN,-1,sizeof(matchN));
-	FOR(i,n){
-		if(i==0 || i==with) continue;
-		memset(visited,0,sizeof(visited));
-		if(dfs(i)) ++ret;
-	}
-	return ret;
-}
-
 int main() {
-	inp1(n);
-	FOR(i,n){
-		inp1(arr[i]);
-	}
-	figurePrime();
-	int cnt=0;
-	REP(i,1,n){
-		if(notPrime[arr[0]+arr[i]]) continue;
-		with=i;
-		if(bipartite()==n/2-1){
-			++cnt;
-			printf("%d ",arr[i]);
-		}
-	}
-	if(!cnt) printf("-1");
-
+	cout << furthest(3,3);
 	return 0;
 }

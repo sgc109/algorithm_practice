@@ -11,7 +11,7 @@
 #include <set>
 #include <cmath>
 // #include <unordered_set>
-#include <map>
+// #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -20,6 +20,7 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
+// #define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
 
 using namespace std;
 
@@ -35,24 +36,15 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000002;
+const int MAX_N = 102;
 
-ll fibo[MAX_N];
 int main() {
-	ll n;
-	scanf("%lld",&n);
-	fibo[1]=2;
-	fibo[2]=3;
-	for(int i=3;fibo[i-1]<1000000000000000010L;i++){
-		fibo[i]=fibo[i-2]+fibo[i-1];
+	int arr[5]={1,3,4,7,11};
+	vi pSum(1);
+	partial_sum(arr,arr+5,back_inserter(pSum));
+	FOR(i,6){
+		printf("%d ",pSum[i]);
 	}
-	int i;
-	for(i = 1; fibo[i]<=n; i++){
-
-	}
-	printf("%d",i-1);
-
-
-
+	
 	return 0;
 }

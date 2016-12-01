@@ -35,27 +35,45 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 400000002;
+const int MAX_N = 15;
 
-int notPrime[MAX_N];
-
+int mod10[MAX_N];
+int n,m;
+string e;
+string sorted;
+ll dp[1<<MAX_N][20][2];
+ll solve(int used, int mod, bool smaller) {
+	if(used==(1<<n)-1) return !mod&&smaller;
+	ll& cache = dp[used][mod][smaller];
+	if(cache != -1) return cache;
+	int pos=0;
+	FOR(i,n) if((used>>i)&1) pos++;
+	ll ret=0;
+	FOR(i,n){
+		if((used>>i)&1) continue;
+		if(!i || sorted[i-1]!=sorted[i] || ((used>>(i-1))&1)){
+			if(smaller||sorted[i]<e[pos]) ret+=solve(used|(1<<i),(mod+mod10[n-pos-1]*(sorted[i]-'0'))%m,1);
+			else if(sorted[i]==e[pos]) ret+=solve(used|(1<<i),(mod+mod10[n-pos-1]*(sorted[i]-'0'))%m,0);
+		}
+	}
+	return cache=ret%MOD;
+}
 int main() {
-	int n=MAX_N-2;
-	for(int i=2; i*i<=n; i++){
-		if(notPrime[i]) continue;
-		for(int j=i*2;j<=n;j+=i){
-			notPrime[j]=1;
+	int T;
+	inp1(T);
+	while(T--){
+		memset(dp,-1,sizeof(dp));
+		cin >> e;
+		n = e.size();
+		inp1(m);
+		mod10[0]=1;
+		FOR(i,n-1)	{
+			mod10[i+1] = (mod10[i]*10)%m;
 		}
+		sorted = e;
+		sort(sorted.begin(),sorted.end());
+		printf("%lld\n",solve(0,0,0));
 	}
-	int dist=0;
-	int prev=0;
-	for(int i=2; i<n;i++){
-		if(!notPrime[i]) {
-			dist=max(dist,i-prev);
-			prev=i;
-		}
-	}
-	printf("%d",dist);
-
+	
 	return 0;
 }

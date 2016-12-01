@@ -11,7 +11,7 @@
 #include <set>
 #include <cmath>
 // #include <unordered_set>
-#include <map>
+// #include <map>
 #define REP(i,a,b) for(int i = a; i < b;++i) 
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
@@ -35,24 +35,33 @@ typedef queue<int> QU;
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000002;
+const int MAX_N = 1002;
 
-ll fibo[MAX_N];
+int fromLeft[MAX_N];
+int fromRight[MAX_N];
+int n;
+int arr[MAX_N];
 int main() {
-	ll n;
-	scanf("%lld",&n);
-	fibo[1]=2;
-	fibo[2]=3;
-	for(int i=3;fibo[i-1]<1000000000000000010L;i++){
-		fibo[i]=fibo[i-2]+fibo[i-1];
+	inp1(n);
+	FOR(i,n){
+		inp1(arr[i]);
 	}
-	int i;
-	for(i = 1; fibo[i]<=n; i++){
-
+	FOR(i,n){
+		fromLeft[i]=1;
+		FOR(j,i){
+			if(arr[j]<arr[i]) fromLeft[i]=max(fromLeft[i],fromLeft[j]+1);
+		}
 	}
-	printf("%d",i-1);
-
-
-
+	for(int i=n-1;i>=0;i--){
+		fromRight[i]=1;
+		for(int j=n-1;j>i;j--){
+			if(arr[i]>arr[j]) fromRight[i]=max(fromRight[i],fromRight[j]+1);
+		}
+	}
+	int ans=0;
+	FOR(i,n){
+		ans=max(ans,fromLeft[i]+fromRight[i]);
+	}
+	printf("%d",ans-1);
 	return 0;
 }
