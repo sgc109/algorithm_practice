@@ -12,102 +12,103 @@
 #include <cmath>
 // #include <unordered_set>
 // #include <map>
-#define REP(i,a,b) for(int i = a; i < b;++i) 
+#define REP(i,a,b) for(int i = a; i < b;++i)
 #define FOR(i,n) REP(i,0,n)
 #define mp make_pair
 #define pb push_back
+#define all(v) (v).begin(),(v).end()
 #define inp1(a) scanf("%d",&a)
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
 
 using namespace std;
 
 typedef long long ll;
 typedef pair<ll,ll> pll;
 typedef vector<int> vi;
+typedef vector<ll> vl;
 typedef vector<vector<int> > vvi;
 typedef pair<int,int> pii;
 typedef pair<int,pair<int,int> > piii;
 typedef queue<int> QU;
 
+const double EPSILON = 1e-9;
+const double PI = acos(0.0)*2;
+const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+const int MAX_N = 300002;
 
-vector<pair<int,pii> > lakes;
-int r,c,k;
-char map[52][52];
-int visited[52][52];
-int dx[4] = {0,-1,1,0};
-int dy[4] = {-1,0,0,1};
-
-int area;
-bool adjSea;
-
-bool inRange(int i, int j){
-	if(0 <= i && i < r && 0 <= j && j < c) return true;
-	return false;
-}
-
-bool isAdjSea(int i, int j){
-	if(i == 0 || i == r-1 || j == 0 || j == c-1) return true;
-	return false;
-}
-void dfs(int hereI, int hereJ){
-	if(isAdjSea(hereI,hereJ)) adjSea=true;
-	visited[hereI][hereJ] = 1;
-	++area;
-	FOR(i,4){
-		int thereI = hereI + dy[i];
-		int thereJ = hereJ + dx[i];
-		if(inRange(thereI,thereJ) && visited[thereI][thereJ]==0 && map[thereI][thereJ] == '.') {
-			dfs(thereI,thereJ);
-		}
-	}
-}
-
-void dfs2(int hereI, int hereJ){
-	map[hereI][hereJ] = '*';
-	FOR(i,4){
-		int thereI = hereI + dy[i];
-		int thereJ = hereJ + dx[i];
-		if(inRange(thereI,thereJ) && map[thereI][thereJ] == '.') {
-			dfs2(thereI,thereJ);
-		}
-	}
-}
+int n,k;
+vector<pair<pair<int,int>, int > > v;
+pii arr[MAX_N];
 int main() {
-	inp3(r,c,k);
-	FOR(i,r){
-		scanf("%s",map[i]);
+	inp2(n,k);
+	FOR(i,n){
+		int a,b;
+		inp2(a,b);
+		arr[i]=mp(a,b);
+		v.pb(mp(mp(a,0),i+1));
+		v.pb(mp(mp(b,1),i+1));
 	}
-
-	FOR(i,r){
-		FOR(j,c){
-			if(map[i][j]=='.' && visited[i][j] == 0) {
-				adjSea = false;
-				dfs(i,j);
-				if(!adjSea) lakes.pb(mp(area,mp(i,j)));
-				area=0;
+	sort(v.begin(),v.end());
+	set<pair<pair<int, int>,int> > st;
+	int ans=0;
+	int ansI;
+	bool start=false;
+	auto it=st.begin();
+	pair<pair<int, int>,int> memo;
+	pair<pair<int, int>,int> gotoo;
+	FOR(i,v.size()){
+		// if(start) printf("kth:%d\n",(*it).first.first);
+		int pos = v[i].first.first;
+		int lr = v[i].first.second;
+		int id = v[i].second;
+		if(lr==0) {
+			if(st.size()>=k) gotoo=*(--it);
+			st.insert(v[i]);
+			if(st.size()==k){
+				it=--st.end();
+				memo=(*it);
+			}
+			else if(st.size()>k){
+				if(v[i]<memo) it=st.find(gotoo),memo=(*it);
+				else it=st.find(memo);
+			}
+		}
+		else if(lr==1){
+			if(st.size()>=k){
+				if(ans<pos-(*it).first.first+1){
+					ans=pos-(*it).first.first+1;
+					ansI=i;
+				}
+			}
+			if(st.size()>k) gotoo=*(++it);
+			st.erase(st.find(mp(mp(arr[id-1].first,0),id)));
+			if(st.size()>=k){
+				if(mp(mp(arr[id-1].first,0),id)<memo) it=st.find(gotoo), memo=(*it);
+				else it=st.find(memo);
 			}
 		}
 	}
-
-	sort(lakes.begin(),lakes.end());
-	int ans = 0;
-	int curCnt = lakes.size();
-	int i = 0;
-	while(curCnt > k){
-		ans += lakes[i].first;
-		dfs2(lakes[i].second.first,lakes[i].second.second);
-		++i;
-		--curCnt;
-	}
 	printf("%d\n",ans);
-	FOR(i,r){
-		printf("%s\n",map[i]);
+	if(!ans) {
+		FOR(i,k) printf("%d ",i+1);
+		return 0;
 	}
+	set<int> st2;
+	FOR(i,ansI+1){
+		int pos = v[i].first.first;
+		int lr = v[i].first.second;
+		int id = v[i].second;
+		if(lr==0) st2.insert(id);
+		else if(lr==1&&i!=ansI) st2.erase(st2.find(id));
+	}
+	vi ansV;
+	int t=0;
+	for(auto it=st2.begin();it!=st2.end()&&t<k;it++,t++) ansV.pb((*it));
+		sort(ansV.begin(),ansV.end());
+	FOR(i,ansV.size()) printf("%d ",ansV[i]);
 	return 0;
 }

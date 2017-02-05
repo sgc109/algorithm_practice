@@ -1,103 +1,84 @@
-#include <iostream>
-#include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <queue>
-#include <utility>
-#include <stack>
-#include <cstring>
-#include <cstdlib>
-#include <string>
-#include <unordered_set>
-#include <set>
-// #include <map>
-#define REP(i,a,b) for(int i = a; i < b;++i) 
-#define FOR(i,n) REP(i,0,n)
-#define mp make_pair
+#include <bits/stdc++.h>
+#define REP(i,a,b) for(int i=a;i<=b;++i)
+#define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
+#define all(v) (v).begin(),(v).end()
 #define inp1(a) scanf("%d",&a)
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-
 using namespace std;
-
-typedef pair<long long, long long> pll;
+typedef long long ll;
+typedef pair<ll,ll> pll;
 typedef vector<int> vi;
+typedef vector<ll> vl;
+typedef vector<pair<int,int> > vii;
 typedef vector<vector<int> > vvi;
+typedef pair<int,int> pii;
+typedef pair<int,pair<int,int> > piii;
+const double EPSILON = 1e-9;
+const double PI = acos(0.0)*2;
+const int MOD = 1000000007;
+const int INF = 0x3c3c3c3c;
+const long long INFL = 0x3c3c3c3c3c3c3c3c;
+const int MAX_N = 102;
 
-const int INF = 0x3a3a3a3a;
-const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 1000000;
-
-
-int dx[4] = {0,1,-1,0};
-int dy[4] = {1,0,0,-1};
-int map[101][101];
-int n;
-int cnt;
-
-bool inRange(int i, int j) {
-	if(0 <= i && i < n && 0 <= j && j < n) return true;
-	return false;
+int dy[]={-1,0,0,1};
+int dx[]={0,-1,1,0};
+int Map[103][103];
+int visited[103][103];
+int dist[103][103];
+int N;
+int landCnt;
+bool inRange(int i, int j){
+	return 0<=i&&i<N&&0<=j&&j<N;
 }
-
-int visited[101][101];
-void dfs(int hereI, int hereJ) {
-	visited[hereI][hereJ] = 1;
-	map[hereI][hereJ] = cnt;
-
-
-	FOR(k,4) {
-		int thereI = hereI + dy[k];
-		int thereJ = hereJ + dx[k];
-		if(visited[thereI][thereJ] == 0 && map[thereI][thereJ] != 0) {
-			dfs(thereI,thereJ);
-		}
+void dfs(int hereI, int hereJ){
+	visited[hereI][hereJ]=1;
+	Map[hereI][hereJ]=landCnt;
+	FOR(i,4){
+		int thereI=hereI+dy[i];
+		int thereJ=hereJ+dx[i];
+		if(!inRange(thereI,thereJ)||visited[thereI][thereJ]||Map[thereI][thereJ]==0) continue;
+		dfs(thereI,thereJ);
 	}
 }
-
 int main() {
-	memset(visited,0,sizeof(visited));
-	inp1(n);
-	FOR(i,n){
-		FOR(j,n){
-			inp1(map[i][j]);
+	landCnt=1;
+	inp1(N);
+	FOR(i,N) FOR(j,N) inp1(Map[i][j]);
+	FOR(i,N){
+		FOR(j,N) {
+			if(visited[i][j]||Map[i][j]==0) continue;
+			dfs(i,j);
+			landCnt++;
 		}
 	}
-	cnt=0;
-	FOR(i,n){
-		FOR(j,n){
-			if(visited[i][j] == 0 && map[i][j] != 0) {
-				++cnt;
-				dfs(i,j);
+	landCnt--;
+	int ans=INF;
+	memset(dist,-1,sizeof(dist));
+	queue<piii> q;
+	FOR(i,N){
+		FOR(j,N){
+			if(Map[i][j]==k) q.push({i,j}),dist[i][j]=0;
+		}
+	}
+	while(!q.empty()){
+		int hereI=q.front().first;
+		int hereJ=q.front().second;
+		q.pop();
+		FOR(i,4){
+			int thereI=hereI+dy[i];
+			int thereJ=hereJ+dx[i];
+			if(!inRange(thereI,thereJ)||dist[thereI][thereJ]!=-1)continue;
+			dist[thereI][thereJ]=dist[hereI][hereJ]+1;
+			q.push({thereI,thereJ});
+			if(Map[thereI][thereJ]!=0&&Map[thereI][thereJ]!=k) {
+				ans=min(ans,dist[thereI][thereJ]);
+				break;
 			}
 		}
 	}
-
-	for(int t = 0; ; ++t) {
-		FOR(i,n){
-			FOR(j,n){
-				int hereTerr = map[i][j];
-				if(hereTerr <= 0) continue;
-				FOR(k,4) {
-					int newI = i+dy[k];
-					int newJ = j+dx[k];
-					if(!inRange(newI,newJ)) continue;
-					if(map[newI][newJ] != 0 && map[newI][newJ] != -hereTerr && map[newI][newJ] != hereTerr) {
-						if(map[newI][newJ] > 0) printf("%d",2*t);
-						else printf("%d",2*t+1);
-						return 0;
-					}
-					if(map[newI][newJ] == 0) map[newI][newJ] = -hereTerr;
-				}
-			}
-		}
-		FOR(i,n){
-			FOR(j,n){
-				if(map[i][j]<0) map[i][j] = -map[i][j];
-			}
-		}
-	}
+	printf("%d",ans-1);
 	return 0;
 }

@@ -35,13 +35,14 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 1000000;
 
+int T,N,M,K,R;
 int main() {
 	freopen("input.txt","w",stdout);
-	
-	printf("2000 1\n");
-	REP(i,1,2000){
-		printf("%d %d\n",i,i+1);
-	}
+	N=10000;
+	printf("%d\n",N);
+	FOR(i,N) printf("%d ",i%N+1);
+	printf("\n");
+	FOR(i,N-1) printf("%d %d\n",i+1,i+2);
 	
 	return 0;
 }
