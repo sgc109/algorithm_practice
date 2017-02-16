@@ -40,20 +40,35 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int N,M,K;
-ll dp[33][33][33][1<<9];
-ll go(int u, int v, int restRoad, int state){
-	state&=((1<<K+1)-1);
-	if(u==N) return !restRoad && !state;
-	if(restRoad<0) return 0;
-	ll& cache = dp[u][v][restRoad][state];
+ll dp[10][1<<10];
+int W,H;
+int bitOn(int state, int pos){
+	return state|(1<<pos-1);
+}
+int isOn(int state, int pos){
+	return state&(1<<pos-1);
+}
+ll go(int, int);
+ll back(int h, int w, int prvState, int curState){
+	if(w==W) return go(h+1,curState);
+	ll ret=0;
+	ret+=back(h,w+1,prvState,curState);
+	if(isOn(prvState,w)){
+		(ret+=back(h,w+1,prvState,bitOn(curState,w)))%=MOD;
+		if(w+1<W && isOn(prvState,w+1)) (ret+=back(h,w+2,prvState,bitOn(bitOn(curState,w),w+1)))%=MOD;
+		if(w+2<W && isOn(prvState,w+2)) (ret+=back(h,w+3,prvState,bitOn(bitOn(bitOn(curState,w),w+1),w+2)))%=MOD;
+	}
+	return ret;
+}
+ll go(int h, int prvState){
+	if(h==H) return 1;
+	ll& cache = dp[h][prvState];
 	if(cache!=-1) return cache;
-	if(v==N) return cache = (state&1?0:go(u+1,u+2,restRoad,state<<1));
-	return cache = go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state);
+	return cache = back(h,0,prvState,0);
 }
 int main() {
 	memset(dp,-1,sizeof(dp));
-	scanf("%d%d%d",&N,&M,&K);
-	printf("%lld", go(0,1,M,0));
+	scanf("%d%d",&W,&H);
+	printf("%lld",go(0,(1<<W)-1));
 	return 0;
 }
