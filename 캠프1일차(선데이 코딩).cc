@@ -40,20 +40,24 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int N,M,K;
-ll dp[33][33][33][1<<9];
-ll go(int u, int v, int restRoad, int state){
-	state&=((1<<K+1)-1);
-	if(u==N) return !restRoad && !state;
-	if(restRoad<0) return 0;
-	ll& cache = dp[u][v][restRoad][state];
+int dp[103][10003];
+ll fact(int x){
+	if(!x) return 1;
+	return x*fact(x-1)%MOD;
+}
+int R,S;
+int go(int roomNum, int emptyCnt){
+	if(roomNum==R) return 1;
+	int& cache = dp[roomNum][emptyCnt];
 	if(cache!=-1) return cache;
-	if(v==N) return cache = (state&1?0:go(u+1,u+2,restRoad,state<<1));
-	return cache = go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state);
+	int ret=0;
+	ret+=go(roomNum+1,emptyCnt+S-1);
+	if(emptyCnt) ret+=go(roomNum,emptyCnt-1);
+	return cache=ret%MOD;
 }
 int main() {
 	memset(dp,-1,sizeof(dp));
-	scanf("%d%d%d",&N,&M,&K);
-	printf("%lld", go(0,1,M,0));
+	scanf("%d%d",&R,&S);
+	printf("%lld",(go(0,0)*fact(R))%MOD);
 	return 0;
 }

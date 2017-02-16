@@ -40,20 +40,28 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int N,M,K;
-ll dp[33][33][33][1<<9];
-ll go(int u, int v, int restRoad, int state){
-	state&=((1<<K+1)-1);
-	if(u==N) return !restRoad && !state;
-	if(restRoad<0) return 0;
-	ll& cache = dp[u][v][restRoad][state];
-	if(cache!=-1) return cache;
-	if(v==N) return cache = (state&1?0:go(u+1,u+2,restRoad,state<<1));
-	return cache = go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state);
+int t[200003];
+int N,M,a,b,c;
+vector<int> sorted;
+unordered_set<int> us;
+void init(){for(int i = N-1; i >= 0; i--) t[i]=min(t[i<<1],t[i<<1|1]);}
+int query(int l, int r){
+	int ret=INF;
+	for(l+=N,r+=N;l<=r;l>>=1,r>>=1){
+		if(l&1) ret=min(ret,t[l++]);
+		if(!(r&1)) ret=min(ret,t[r--]);
+	}
+	return ret;
 }
 int main() {
-	memset(dp,-1,sizeof(dp));
-	scanf("%d%d%d",&N,&M,&K);
-	printf("%lld", go(0,1,M,0));
+	scanf("%d%d",&N,&M);
+	for(int i = 0; i < N; i++){
+		scanf("%d",t+N+i);
+	}
+	init();
+	for(int i = 0; i < M; i++){
+		scanf("%d%d",&a,&b), a--, b--;
+		printf("%d\n",query(a,b));
+	}
 	return 0;
 }

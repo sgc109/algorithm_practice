@@ -43,17 +43,17 @@ const int MAX_N = 102;
 int N,M,K;
 ll dp[33][33][33][1<<9];
 ll go(int u, int v, int restRoad, int state){
-	state&=((1<<K+1)-1);
-	if(u==N) return !restRoad && !state;
+	if(u==N) return !restRoad;
 	if(restRoad<0) return 0;
 	ll& cache = dp[u][v][restRoad][state];
 	if(cache!=-1) return cache;
-	if(v==N) return cache = (state&1?0:go(u+1,u+2,restRoad,state<<1));
-	return cache = go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state);
+	if(v==min(u+K+1,N)) return cache = (state&1?0:go(u+1,u+2,restRoad,state>>1));
+	return cache = (go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state))%MOD;
 }
 int main() {
 	memset(dp,-1,sizeof(dp));
 	scanf("%d%d%d",&N,&M,&K);
 	printf("%lld", go(0,1,M,0));
 	return 0;
+
 }

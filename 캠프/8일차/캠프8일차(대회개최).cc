@@ -18,6 +18,7 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
+#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)z
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
@@ -30,63 +31,28 @@ typedef vector<vector<int> > vvi;
 typedef pair<int,pair<int,int> > piii;
 typedef vector<piii> viii;
 const double EPSILON = 1e-9;
-const double PI = acos(0.0)*2;
+const double PI = acos(-1);
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-vi G[53];
-int notPrime[2003],N,A[53],matched[53],visited[53];
-bool dfs(int here){
-	if(visited[here]) return false;
-	visited[here]=1;
-	for(int there : G[here]){
-		if(there==0 || there==matched[0]) continue;
-		if(matched[there]==-1 || dfs(matched[there])){
-			matched[there]=here;
-			matched[here]=there;
-			return true;
-		}
-	}
-	return false;
+int cnt[5];
+bool dekiru(int goal){
+	if(cnt[0]+cnt[1]<goal) return false;
+	int tmp=cnt[2]+min(cnt[1],cnt[0]+cnt[1]-goal);
+	if(tmp+cnt[3]<goal) return false;
+	return cnt[4]+min(cnt[3],tmp+cnt[3]-goal)>=goal;
 }
 int main() {
-	notPrime[1]=1;
-	for(int i=2;i*i<=2000;i++){
-		if(notPrime[i]) continue;
-		for(int j=2*i;j<=2000;j+=i) notPrime[j]=1;
+	FOR(i,5) inp1(cnt[i]);
+	int lo=0,hi=200000;
+	while(lo<hi){
+		int m=(lo+hi)>>1;
+		if(dekiru(m)) lo=m+1;
+		else hi=m;
 	}
-	inp1(N);
-	FOR(i,N) inp1(A[i]);
-	FOR(i,N){
-		REP(j,i+1,N-1){
-			if(!notPrime[A[i]+A[j]]) {
-				G[i].pb(j);
-				G[j].pb(i);
-			}
-		}
-	}
-	vi ans;
-	REP(i,1,N-1){
-		if(notPrime[A[0]+A[i]]) continue;
-		memset(matched,-1,sizeof(matched));
-		matched[0]=i;
-		matched[i]=0;
-		int cnt=0;
-		FOR(j,N) {
-			memset(visited,0,sizeof(visited));
-			if(matched[j]!=-1||dfs(j)) {
-				cnt++;
-			}
-		}
-		if(cnt==N) ans.pb(A[i]);
-	}
-	if(sz(ans)==0){
-		printf("-1");
-		return 0;
-	}
-	sort(all(ans));
-	FOR(i,sz(ans)) printf("%d ",ans[i]);
+	lo--;
+	printf("%d",lo);
 	return 0;
 }

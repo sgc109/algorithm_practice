@@ -1,9 +1,9 @@
 // #include <bits/stdc++.h>
 #include <unordered_set>
 // #include <unordered_map>
-// #include <iostream>
 #include <vector>
 #include <cstdio>
+#include <iostream>
 #include <cstring>
 #include <queue>
 #include <set>
@@ -21,7 +21,7 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)
+#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)z
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
@@ -40,20 +40,45 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int N,M,K;
-ll dp[33][33][33][1<<9];
-ll go(int u, int v, int restRoad, int state){
-	state&=((1<<K+1)-1);
-	if(u==N) return !restRoad && !state;
-	if(restRoad<0) return 0;
-	ll& cache = dp[u][v][restRoad][state];
+struct Range{
+	int l,r;
+	bool operator<(Range& rhs){
+		if(l==rhs.l) return r<rhs.r;
+		return l<rhs.l;
+	}
+};
+int N,M,a,b,E;
+Range ranges[5003];
+ll dp[5003][10003];
+unordered_set<int> us;
+ll solve(int pos, int last){
+	if(pos==M) return last==E;
+	if(ranges[pos].l!=0&&last<ranges[pos].l) return 0;
+	ll& cache = dp[pos][last+1];
 	if(cache!=-1) return cache;
-	if(v==N) return cache = (state&1?0:go(u+1,u+2,restRoad,state<<1));
-	return cache = go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state);
+	return cache = (solve(pos+1,max(last,ranges[pos].r))+solve(pos+1,last))%MOD;
 }
 int main() {
 	memset(dp,-1,sizeof(dp));
-	scanf("%d%d%d",&N,&M,&K);
-	printf("%lld", go(0,1,M,0));
+	vi sorted;
+	inp2(N,M);
+	us.insert(1),sorted.pb(1);
+	us.insert(N),sorted.pb(N);
+	FOR(i,M){
+		inp2(a,b);
+		ranges[i]=Range{a,b};
+		if(!us.count(a)) us.insert(a),sorted.pb(a);
+		if(!us.count(b)) us.insert(b),sorted.pb(b);
+	}
+	sort(all(sorted));
+	E=sz(sorted)-1;
+	FOR(i,M) {
+		ranges[i].l=lower_bound(all(sorted),ranges[i].l)-sorted.begin();
+		ranges[i].r=lower_bound(all(sorted),ranges[i].r)-sorted.begin();
+	}
+	sort(ranges,ranges+M);
+	// 좌표압축 + 정렬까지 완료
+
+	printf("%lld", solve(0,-1));
 	return 0;
 }

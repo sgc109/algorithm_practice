@@ -1,7 +1,7 @@
 // #include <bits/stdc++.h>
-#include <unordered_set>
+// #include <unordered_set>
 // #include <unordered_map>
-// #include <iostream>
+#include <iostream>
 #include <vector>
 #include <cstdio>
 #include <cstring>
@@ -21,7 +21,7 @@
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)
+#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)z
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
@@ -40,20 +40,38 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int N,M,K;
-ll dp[33][33][33][1<<9];
-ll go(int u, int v, int restRoad, int state){
-	state&=((1<<K+1)-1);
-	if(u==N) return !restRoad && !state;
-	if(restRoad<0) return 0;
-	ll& cache = dp[u][v][restRoad][state];
-	if(cache!=-1) return cache;
-	if(v==N) return cache = (state&1?0:go(u+1,u+2,restRoad,state<<1));
-	return cache = go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state);
+int N,M,a,b,o;
+vector<int> G[100003];
+ll t[200003];
+int l[100003],r[100003];
+int cnt;
+void dfs(int here){
+	l[here]=cnt++;
+	for(int there: G[here]) dfs(there);
+	r[here]=cnt++;
+}
+ll query(int x){
+	ll ret=0;
+	for(;x>0;x-=-x&x) ret+=t[x];
+	return ret;
+}
+void update(int x, int v){
+	for(;x<=2*N;x+=-x&x) t[x]+=v;
 }
 int main() {
-	memset(dp,-1,sizeof(dp));
-	scanf("%d%d%d",&N,&M,&K);
-	printf("%lld", go(0,1,M,0));
+	ios::sync_with_stdio(false);
+	cnt=1;
+	cin >> N >> M;
+	REP(i,1,N){
+		cin >> a;
+		if(a==-1) continue;
+		G[a].pb(i);
+	}
+	dfs(1);
+	FOR(i,M){
+		cin >> o;
+		if(o-1) cin >> a,printf("%lld\n",query(l[a]));
+		else cin >> a >> b,update(r[a]+1,-b),update(l[a],b);
+	}
 	return 0;
 }

@@ -38,22 +38,31 @@ const double PI = acos(-1);
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
-
-int N,M,K;
-ll dp[33][33][33][1<<9];
-ll go(int u, int v, int restRoad, int state){
-	state&=((1<<K+1)-1);
-	if(u==N) return !restRoad && !state;
-	if(restRoad<0) return 0;
-	ll& cache = dp[u][v][restRoad][state];
-	if(cache!=-1) return cache;
-	if(v==N) return cache = (state&1?0:go(u+1,u+2,restRoad,state<<1));
-	return cache = go(u,v,restRoad-1,(state^1)^(1<<v-u))+go(u,v+1,restRoad,state);
+const int MAX_N = 100000000;
+int divs[MAX_N+2];
+int countDivs(int x){
+	int ret=1;
+	int last=-2,cnt=0;
+	for(;x>1;x=x/divs[x]){
+		if(last==divs[x]) cnt++;
+		else ret*=cnt+1,cnt=1,last=divs[x];
+	}
+	return ret*(cnt+1);
 }
 int main() {
-	memset(dp,-1,sizeof(dp));
-	scanf("%d%d%d",&N,&M,&K);
-	printf("%lld", go(0,1,M,0));
+	int K=MAX_N;
+	for(int i = 1; i <= K; i++) divs[i]=i;	
+	for(int i = 2; i*i <= K; i++){
+		if(divs[i]!=i) continue;
+		for(int j = i*2; j <= K; j+=i){
+			divs[j]=min(divs[j],i);
+		}
+	}
+	int ans=0,ans2;
+	for(int i = 1; i <= K; i++){
+		if(ans<countDivs(i)) ans=countDivs(i),ans2=i;
+	}
+	printf("%d %d",ans,ans2);
+
 	return 0;
 }

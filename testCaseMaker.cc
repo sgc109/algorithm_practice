@@ -12,8 +12,8 @@
 #include <cmath>
 // #include <unordered_set>
 // #include <map>
-#define REP(i,a,b) for(int i = a; i < b;++i) 
-#define FOR(i,n) REP(i,0,n)
+#define REP(i,a,b) for(int i = a; i <= b;++i) 
+#define FOR(i,n) REP(i,0,n-1)
 #define mp make_pair
 #define pb push_back
 #define inp1(a) scanf("%d",&a)
@@ -38,11 +38,18 @@ const int MAX_N = 1000000;
 int T,N,M,K,R;
 int main() {
 	freopen("input.txt","w",stdout);
-	N=10000;
-	printf("%d\n",N);
-	FOR(i,N) printf("%d ",i%N+1);
+	N=500,K=100;
+	cout << N << endl;
+	FOR(i,N/2) printf("%d ",i%2+1);
+	FOR(i,(N+1)/2) printf("0 ");
 	printf("\n");
-	FOR(i,N-1) printf("%d %d\n",i+1,i+2);
+	FOR(i,N){
+		FOR(j,N){
+			if(i-j) printf("1000 ");
+			else printf("0 ");
+		}
+		printf("\n");
+	}
 	
 	return 0;
 }

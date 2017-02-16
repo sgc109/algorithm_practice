@@ -36,57 +36,23 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-vi G[53];
-int notPrime[2003],N,A[53],matched[53],visited[53];
-bool dfs(int here){
-	if(visited[here]) return false;
-	visited[here]=1;
-	for(int there : G[here]){
-		if(there==0 || there==matched[0]) continue;
-		if(matched[there]==-1 || dfs(matched[there])){
-			matched[there]=here;
-			matched[here]=there;
-			return true;
-		}
-	}
-	return false;
+ll ret;
+int A[100001],t1[100001],t2[100001],N;
+void update(int *t, int p, int v){
+    for(;p<=N;p+=-p&p) t[p]+=v;
+}
+ll query(int *t, int p){
+    for(ret=0;p>0;p-=p&-p) ret+=t[p];
+    return ret;
 }
 int main() {
-	notPrime[1]=1;
-	for(int i=2;i*i<=2000;i++){
-		if(notPrime[i]) continue;
-		for(int j=2*i;j<=2000;j+=i) notPrime[j]=1;
-	}
-	inp1(N);
-	FOR(i,N) inp1(A[i]);
-	FOR(i,N){
-		REP(j,i+1,N-1){
-			if(!notPrime[A[i]+A[j]]) {
-				G[i].pb(j);
-				G[j].pb(i);
-			}
-		}
-	}
-	vi ans;
-	REP(i,1,N-1){
-		if(notPrime[A[0]+A[i]]) continue;
-		memset(matched,-1,sizeof(matched));
-		matched[0]=i;
-		matched[i]=0;
-		int cnt=0;
-		FOR(j,N) {
-			memset(visited,0,sizeof(visited));
-			if(matched[j]!=-1||dfs(j)) {
-				cnt++;
-			}
-		}
-		if(cnt==N) ans.pb(A[i]);
-	}
-	if(sz(ans)==0){
-		printf("-1");
-		return 0;
-	}
-	sort(all(ans));
-	FOR(i,sz(ans)) printf("%d ",ans[i]);
-	return 0;
+    inp1(N);
+    FOR(i,N) {
+        inp1(A[i]);
+        update(t2,A[i],1);
+    }
+    ll ans=0;
+    for(int i=0;i<N;update(t1,A[i],1),update(t2,A[i],-1),i++) ans+=(query(t1,N)-query(t1,A[i]))*query(t2,A[i]-1);
+    printf("%lld",ans);
+    return 0;
 }
