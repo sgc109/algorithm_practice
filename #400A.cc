@@ -1,4 +1,17 @@
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+// #include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <set>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <utility>
+#include <string>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -26,14 +39,27 @@ const int MOD = 1e9+7;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
-
-ll pow2(ll x, int n){
-	if(!n) return 1;
-	if(n%2) return x*pow2(x,(n-1)/2)%MOD*pow2(x,(n-1)/2)%MOD;
-	return pow2(x,n/2)*pow2(x,n/2)%MOD;
-}
-
+map<ll, ll> um;
+int N,K;
+int A[100003];
+ll pSum[100003];
+unordered_set<ll> us;
+vector<ll> cand;
 int main() {
-	printf("%lld",pow2(2,200000));
+	inp2(N,K);
+	FOR(i,N) inp1(A[i]), pSum[i+1]=pSum[i]+A[i];
+	long long pusher=1;
+	for(; abs(pusher) <= 1e16; pusher*=K) {
+		if(us.count(pusher)) break;
+		us.insert(pusher);
+		cand.pb(pusher);
+	}
+	ll ans=0;
+	um[0]=1;
+	REP(i,1,N){
+		for(auto kk : cand) ans+=um[pSum[i]-kk];
+		um[pSum[i]]++;
+	}
+	printf("%lld",ans);
 	return 0;
 }

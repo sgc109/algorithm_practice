@@ -1,4 +1,17 @@
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+// #include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <set>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <utility>
+#include <string>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -12,7 +25,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;	
+typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -25,15 +38,19 @@ const double PI = acos(-1);
 const int MOD = 1e9+7;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
+const int MAX_N = 1000002;
 
-ll pow2(ll x, int n){
-	if(!n) return 1;
-	if(n%2) return x*pow2(x,(n-1)/2)%MOD*pow2(x,(n-1)/2)%MOD;
-	return pow2(x,n/2)*pow2(x,n/2)%MOD;
-}
-
+int notPrime[MAX_N];
+int a;
 int main() {
-	printf("%lld",pow2(2,200000));
+	for(int i = 2; i*i < MAX_N; i++){
+		if(notPrime[i]) continue;
+		for(int j = 2*i; j<MAX_N; j+=i){
+			notPrime[j]=1;
+		}
+	}
+	scanf("%d",&a);
+	if(notPrime[a]) printf("[-] %d is not prime!\n",a);
+	else printf("[+] %d is prime!\n",a);
 	return 0;
 }

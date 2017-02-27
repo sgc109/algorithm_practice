@@ -1,4 +1,17 @@
 #include <bits/stdc++.h>
+// #include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <set>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <utility>
+#include <string>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -12,7 +25,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;	
+typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,13 +40,23 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-ll pow2(ll x, int n){
-	if(!n) return 1;
-	if(n%2) return x*pow2(x,(n-1)/2)%MOD*pow2(x,(n-1)/2)%MOD;
-	return pow2(x,n/2)*pow2(x,n/2)%MOD;
-}
+struct RNG{
+	ll seed;
+	RNG():seed(1){}
+	ll next(){
+		ll ret = seed;
+		seed = (seed*2012122327)%100000;
+		return ret;
+	}
+};
 
+vector<int> before,after;
+int N;
 int main() {
-	printf("%lld",pow2(2,200000));
+	RNG rng;
+	N=100;
+	for(int i = 0; i < N; i++) before.push_back(rng.next());
+	FOR(i,N) printf("%d\n",before[i]);
+
 	return 0;
 }

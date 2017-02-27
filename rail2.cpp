@@ -8,7 +8,7 @@
 #include <queue>
 #include <set>
 #include <map>
-#include <cmath>
+// #include <cmath>
 #include <algorithm>
 #include <utility>
 #include <string>
@@ -33,54 +33,79 @@ typedef vector<pll> vll;
 typedef vector<vector<int> > vvi;
 typedef pair<int,pair<int,int> > piii;
 typedef vector<piii> viii;
-const double EPSILON = 1e-9;
-const double PI = acos(-1);
 const int MOD = 1000000007;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
+struct Range{
+	int l,r;
+	bool operator<(Range& rhs){
+		if(l==rhs.l) return r<rhs.r;
+		return l<rhs.l;
+	}
+};
 int N,M,a,b,E;
-ll dp[200003];
-int l[200003],r[200003],t[200003];
+Range ranges[200003];
+ll dp[3610003];
+int lz[3610003];
+ll pow2(ll x, int n){
+	if(!n) return 1;
+	ll memo;
+	if(n%2) {
+		memo = pow2(x,(n-1)/2);
+		return x*memo%MOD*memo%MOD;
+	}
+	memo = pow2(x,n/2);
+	return memo*memo%MOD;
+}
 unordered_set<int> us;
+ll query(int nl, int nr, int l, int r, int nd){
+	if(lz[nd]) (dp[nd]*=pow2(2,lz[nd]))%=MOD,(nl!=nr?lz[2*nd]+=lz[nd],lz[2*nd+1]+=lz[nd]:0),lz[nd]=0;
+	if(l<=nl&&nr<=r) return dp[nd];
+	if(r<nl||nr<l) return 0;
+	return (query(nl,(nl+nr)/2,l,r,2*nd)+query((nl+nr)/2+1,nr,l,r,2*nd+1))%MOD;
+} ll query(int l, int r){return query(0,E,l,r,1);}
 
-void update(int l, int r, ll v){
-	for(l+=E,r+=E;l<=r;l>>=1,r>>=1){
-		if(l&1) (t[l++]+=v)%=MOD;
-		if(!(r&1)) (t[r--]+=v)%=MOD;
-	}
-}
-ll query(int l, int r){
-	ll ret=0;
-	for(l+=E,r+=E;l<=r;l>>=1,r>>=1){
-		if(l&1) (ret+=t[l++])%=MOD;
-		if(!(r&1)) (ret+=t[r--])%=MOD;
-	}
-	return ret;
-}
+void update(int nl, int nr, int l, int r, int nd){
+	if(lz[nd]) (dp[nd]*=pow2(2,lz[nd]))%=MOD,(nl!=nr?lz[2*nd]+=lz[nd],lz[2*nd+1]+=lz[nd]:0),lz[nd]=0;
+	if(l<=nl&&nr<=r) {(dp[nd]*=2)%=MOD,(nl!=nr?lz[2*nd]++,lz[2*nd+1]++:0);return;}
+	if(r<nl||nr<l) return;
+	update(nl,(nl+nr)/2,l,r,2*nd),update((nl+nr)/2+1,nr,l,r,2*nd+1),dp[nd]=(dp[2*nd]+dp[2*nd+1])%MOD;
+} void update(int l, int r){update(0,E,l,r,1);}
+
+void pUpdate(int nl, int nr, int nd, int pos, ll val){
+	if(lz[nd]) (dp[nd]*=pow2(2,lz[nd]))%=MOD,(nl!=nr?lz[2*nd]+=lz[nd],lz[2*nd+1]+=lz[nd]:0),lz[nd]=0;
+	if(nl==nr&&nl==pos) {dp[nd]=val;return;}
+	if(nr<pos||pos<nl) return;
+	pUpdate(nl,(nl+nr)/2,2*nd,pos,val),pUpdate((nl+nr)/2+1,nr,2*nd+1,pos,val),dp[nd]=(dp[2*nd]+dp[2*nd+1])%MOD;
+} void pUpdate(int pos, ll val){pUpdate(0,E,1,pos,val);}
+
 int main() {
-	memset(dp,-1,sizeof(dp));
 	vi sorted;
 	inp2(N,M);
 	us.insert(1),sorted.pb(1);
 	us.insert(N),sorted.pb(N);
 	FOR(i,M){
 		inp2(a,b);
-		l[i]=a,l[i]=b;
+		ranges[i]=Range{a,b};
 		if(!us.count(a)) us.insert(a),sorted.pb(a);
 		if(!us.count(b)) us.insert(b),sorted.pb(b);
 	}
 	sort(all(sorted));
-	E=sz(sorted);
+	E=sz(sorted)-1;
 	FOR(i,M) {
-		l[i]=lower_bound(all(sorted),l[i])-sorted.begin();
-		r[i]=lower_bound(all(sorted),r[i])-sorted.begin();
+		ranges[i].l=lower_bound(all(sorted),ranges[i].l)-sorted.begin();
+		ranges[i].r=lower_bound(all(sorted),ranges[i].r)-sorted.begin();
 	}
-	// 좌표압축 완료
-	
-	REP(i,1,E){
+	sort(ranges,ranges+M);
+	// 좌표압축 + 정렬까지 완료
 
+	pUpdate(0,1);
+	FOR(i,M){
+		pUpdate(ranges[i].r,(query(ranges[i].l,ranges[i].r)+query(ranges[i].r,ranges[i].r))%MOD);
+		update(ranges[i].r+1,E);
 	}
+	printf("%lld",query(E,E));
 	return 0;
 }

@@ -1,4 +1,17 @@
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+// #include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <set>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <utility>
+#include <string>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -12,7 +25,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;	
+typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,13 +40,21 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-ll pow2(ll x, int n){
-	if(!n) return 1;
-	if(n%2) return x*pow2(x,(n-1)/2)%MOD*pow2(x,(n-1)/2)%MOD;
-	return pow2(x,n/2)*pow2(x,n/2)%MOD;
-}
-
+double dp[2001][2001];
+int N,M,T;
 int main() {
-	printf("%lld",pow2(2,200000));
+	freopen("output.txt","w",stdout);
+	inp1(T);
+	REP(t,1,T){
+		FOR(i,2001) FOR(j,2001) dp[i][j]=0;
+		dp[0][0]=1;
+		inp2(N,M);
+		REP(i,1,N){
+			FOR(j,i){
+				dp[i][j]=dp[i-1][j]*(1.0/(M-j+N-i+1))*(N-i+1)+(j>0?dp[i][j-1]:0)*(1.0/(M-j+N-i+1))*(M-j+1);
+			}
+		}
+		printf("Case #%d: %.8lf\n",t,dp[N][M]);
+	}
 	return 0;
 }

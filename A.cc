@@ -1,4 +1,17 @@
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+// #include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <set>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <utility>
+#include <string>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -12,7 +25,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;	
+typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,13 +40,19 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-ll pow2(ll x, int n){
-	if(!n) return 1;
-	if(n%2) return x*pow2(x,(n-1)/2)%MOD*pow2(x,(n-1)/2)%MOD;
-	return pow2(x,n/2)*pow2(x,n/2)%MOD;
-}
-
+int fell[100003];
+int pos,N,a;
 int main() {
-	printf("%lld",pow2(2,200000));
+	inp1(N);
+	pos=N;
+	FOR(i,N){
+		inp1(a);
+		fell[a]=1;
+		while(fell[pos]) {
+			printf("%d ",pos);
+			pos--;
+		}
+		printf("\n");
+	}
 	return 0;
 }

@@ -1,5 +1,5 @@
-
-
+#include <cstdio>
+using namespace std;
 
 void update(int nl, int nr, int l, int r, int n, ll v){
 	if(d[n]) t[n]+=(nr-nl+1)*d[n],(nl!=nr?d[2*n]+=d[n],d[2*n+1]+=d[n]:0),d[n]=0;
@@ -12,3 +12,9 @@ ll query(int nl, int nr, int l, int r, int n){
 	if(l<=nl&&nr<=r) return t[n];
 	if(r<nl||nr<l) return 0;
 	return query(nl,(nl+nr)/2,l,r,2*n)+query((nl+nr)/2+1,nr,l,r,2*n+1);
+}
+
+int main(){
+	
+	return 0;
+}

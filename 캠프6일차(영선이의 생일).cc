@@ -38,7 +38,7 @@ const double PI = acos(-1);
 const int MOD = 1e9+7;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
+const int MAX_N = 5200;
 
 struct Point{int x,y;};
 vector<int> sortedX, sortedY;
@@ -48,8 +48,8 @@ unordered_set<int> usX, usY;
 int N,M,S,T;
 int dy[]={-1,1,0,0};
 int dx[]={0,0,1,-1};
-vector<int> G[3003];
-int iter[3003],parent[3003],flow[3000][3000],cap[3000][3000],level[3000];
+vector<int> G[MAX_N];
+int iter[MAX_N],parent[MAX_N],flow[MAX_N][MAX_N],cap[MAX_N][MAX_N],level[MAX_N];
 bool isCandle(int i, int j){return i==candle.x&&j==candle.y;}
 bool inRange(int i, int j){return 0<=i&&i<N&&0<=j&&j<M;}
 int IN(int x){return 2+x;}
@@ -60,16 +60,21 @@ void connect(int a, int b){
 	cap[a][b]=1;
 }
 int trans(int i, int j){return i*M+j;}
+// bool isObj(int i, int j){
+// 	FOR(k,3) if(straw[k].x==i&&straw[k].y==j) return true;
+// 	FOR(k,3) if(cherry[k].x==i&&cherry[k].y==j) return true;
+// 	return candle.x==i&&candle.y==j;
+// }
 void makeGraph(){
 	FOR(i,N){
 		FOR(j,M){
-			if(isCandle(i,j)) continue;
 			FOR(k,4){
 				int ni = i+dy[k], nj = j+dx[k];
-				if(!inRange(ni,nj) || isCandle(ni,nj)) continue;
+				if(!inRange(ni,nj)) continue;
+
 				connect(OUT(trans(i,j)),IN(trans(ni,nj)));
 			}
-			connect(IN(trans(i,j)),OUT(trans(i,j)));
+			if(!isCandle(i,j)) connect(IN(trans(i,j)),OUT(trans(i,j)));
 		}
 	}
 }
@@ -187,14 +192,6 @@ int main() {
 	diff = M-sortedY.back();
 	M = newY[sz(sortedY)-1]+(diff>3?3:diff);
 
-	// printf("straw\n");
-	// FOR(i,3) printf("(%d, %d), ",straw[i].x,straw[i].y);
-	// printf("\n");
-	// printf("cherry\n");
-	// FOR(i,3) printf("(%d, %d), ",cherry[i].x,cherry[i].y);
-	// printf("\n");
-	// printf("N:%d, M:%d\n",N,M);
-	// printf("candle:(%d,%d)",candle.x,candle.y);
 	S=0,T=1;
 	makeGraph();
 	FOR(i,3){

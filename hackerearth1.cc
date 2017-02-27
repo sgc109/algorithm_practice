@@ -1,4 +1,15 @@
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+// #include <iostream>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <set>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <utility>
+#include <string>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -27,13 +38,30 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-ll pow2(ll x, int n){
-	if(!n) return 1;
-	if(n%2) return x*pow2(x,(n-1)/2)%MOD*pow2(x,(n-1)/2)%MOD;
-	return pow2(x,n/2)*pow2(x,n/2)%MOD;
-}
-
+int left[100003];
+int T,N;
+int A[100003];
+ll pSum[100003];
 int main() {
-	printf("%lld",pow2(2,200000));
+	inp1(T);
+	while(T--){
+		memset(left,0,sizeof(left));
+		memset(pSum,0,sizeof(pSum));
+		inp1(N);
+		FOR(i,N) inp1(A[i]),pSum[i+1]=pSum[i]+A[i];
+		int l=0,r=INF;
+		REP(i,1,N){
+			int updL=-1;
+			int mod = pSum[i]%N;
+			if(mod) {
+				if(left[mod]) updL = left[mod];
+			}
+			else updL = left[mod];
+			if(updL != -1 && r-l > i-updL) l = updL, r = i;
+			left[mod]=i;
+		}
+		printf("%d %d\n",l+1,r);
+	}
+
 	return 0;
 }

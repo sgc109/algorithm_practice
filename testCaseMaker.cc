@@ -38,17 +38,9 @@ const int MAX_N = 1000000;
 int T,N,M,K,R;
 int main() {
 	freopen("input.txt","w",stdout);
-	N=500,K=100;
-	cout << N << endl;
-	FOR(i,N/2) printf("%d ",i%2+1);
-	FOR(i,(N+1)/2) printf("0 ");
-	printf("\n");
-	FOR(i,N){
-		FOR(j,N){
-			if(i-j) printf("1000 ");
-			else printf("0 ");
-		}
-		printf("\n");
+	printf("999999\n");
+	FOR(i,999999){
+		printf("%d %d\n",i,-100);
 	}
 	
 	return 0;

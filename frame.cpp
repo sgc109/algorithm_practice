@@ -1,17 +1,4 @@
-// #include <bits/stdc++.h>
-#include <unordered_set>
-// #include <unordered_map>
-// #include <iostream>
-#include <vector>
-#include <cstdio>
-#include <cstring>
-#include <queue>
-#include <set>
-#include <map>
-#include <cmath>
-#include <algorithm>
-#include <utility>
-#include <string>
+#include <bits/stdc++.h>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -25,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -35,7 +22,7 @@ typedef pair<int,pair<int,int> > piii;
 typedef vector<piii> viii;
 const double EPSILON = 1e-9;
 const double PI = acos(-1);
-const int MOD = 1000000007;
+const int MOD = 1e9+7;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;

@@ -1,4 +1,17 @@
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+// #include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <set>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <utility>
+#include <string>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
@@ -12,7 +25,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;	
+typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,13 +40,35 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-ll pow2(ll x, int n){
-	if(!n) return 1;
-	if(n%2) return x*pow2(x,(n-1)/2)%MOD*pow2(x,(n-1)/2)%MOD;
-	return pow2(x,n/2)*pow2(x,n/2)%MOD;
-}
-
+int T,N;
+int check[30];
+int ansCnt;
+string ansName;
+char buf[100];
+vector<string> vs;
 int main() {
-	printf("%lld",pow2(2,200000));
+	freopen("output.txt","w",stdout);
+	scanf("%d ",&T);
+	REP(t,1,T){
+		vs.clear();
+		ansCnt=0;
+		scanf("%d ",&N);
+		FOR(i,N){
+			gets(buf);
+			vs.push_back(string(buf));
+		}
+		sort(all(vs));
+		for(auto str : vs){
+			int cnt=0;
+			memset(check,0,sizeof(check));
+			for(char c : str){
+				if(check[c-'A']) continue;
+				check[c-'A']=1,cnt++;
+			}
+			if(ansCnt<cnt) ansCnt=cnt,ansName=str;
+		}
+		printf("Case #%d: ",t);
+		printf("%s\n",ansName.c_str());
+	}
 	return 0;
 }
