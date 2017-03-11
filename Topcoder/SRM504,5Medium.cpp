@@ -1,10 +1,3 @@
-/*
-그냥 재귀함수로 구현하면된다
-인자로는 상하반전여부와 색반전여부 그리고 남아있는 왼쪽끝과 오른쪽끝만 가지고있으면된다
-왜냐하면 공을 빼도 양 끝으로만 빠져나가기 때문에 가운데는 그대로 남아있게 되기떄문에 좌 혹은 우로 한칸씩만 변하게 되기때문이다.
-시간 복잡도는 O(N) 즉 10만번정도 돈다.
-*/
-
 #include <bits/stdc++.h>
 #define REP(i,a,b) for(int i=a;i<=b;++i)
 #define FOR(i,n) for(int i=0;i<n;++i)
@@ -34,24 +27,36 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-class MathContest{
+class TheJackpotDivOne{
 public:
-	string S;
-	int ans;
-	void go(int l, int r, int rev, int inv){
-		if(l>r) return;
-		int pos = (rev?r:l);
-		char color = (S[pos]=='W'&&!inv) || (S[pos]=='B'&&inv)?'W':'B';
-		if(rev) r--;
-		else l++;
-		if(color=='B') inv^=1,ans++;
-		else rev^=1;
-		go(l,r,rev,inv);
-	}
-	int countBlack(string ballSequence, int repetitions){
-		FOR(i,repetitions) S+=ballSequence;
-		ans=0;
-		go(0,sz(ballSequence)*repetitions-1,0,0);
-		return ans;
+	vector<long long> find(vector<long long> money, long long jackpot){
+		long long n = money.size();
+		sort(all(money));
+		while(money[0]!=money.back() && jackpot){
+			long long avg = 0, modSum = 0;
+			for(auto it : money) {
+				avg += it/n;
+				modSum += it%n;
+			}
+			avg += modSum/n;
+			long long give = min(jackpot,avg-money[0]+1);
+			money[0]+=give;
+			sort(all(money));
+			jackpot-=give;
+		}
+		for(auto& it : money) it+=jackpot/n;
+		jackpot-=(jackpot/n*n);
+		for(int i = n-1, j = jackpot; i >= 0 && j; i--,j--) money[i]++;
+		return money;
 	}
 };
+int main() {
+	TheJackpotDivOne obj;
+	vector<long long> ret = obj.find(
+
+{3, 3, 3, 3},
+4
+		);
+	for(auto it : ret) printf("%d ",it);
+	return 0;
+}

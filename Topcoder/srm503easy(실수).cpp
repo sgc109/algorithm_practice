@@ -27,7 +27,53 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
+class ToastXToast{
+public:
+	int aMached[53],bMatched[53];
+	vi linkA[53],linkB[53];
+	int visited[53];
+	int N,M;
+	int dfs(int a){
+		if(visited[a]) return 0;
+		visited[a] = 1;
+		for(int b : linkA[a]){
+			if(bMatched[b]==-1 || dfs(bMatched[b])){
+				bMatched[b] = a;
+				aMached[a] = b;
+				return 1;
+			}
+		}
+		return 0;
+	}
+	int bake(vector <int> undertoasted, vector <int> overtoasted){
+		int N = sz(undertoasted);
+		int M = sz(overtoasted);
+		FOR(i,N){
+			FOR(j,M){
+				if(undertoasted[i]<overtoasted[j]) linkA[i].pb(j), linkB[j].pb(i);
+			}
+		}
+		memset(aMached,-1,sizeof(aMached));
+		memset(bMatched,-1,sizeof(bMatched));
+		int matched=0;
+		FOR(i,N){
+			memset(visited,0,sizeof(visited));
+			if(dfs(i)) matched++;
+		}
+		if(matched<N) return -1;
+		FOR(i,M){
+			if(bMatched[i]==-1 && linkB[i].size()==0) return -1;
+		}
+		return matched;
+	}
+};
 int main() {
+	ToastXToast obj;
+	cout << obj.bake(
 
+{1,2,3},
+{5,6,7}
+
+		);
 	return 0;
 }
