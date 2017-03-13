@@ -27,20 +27,42 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-map<int,int> mp;
+class TheAlmostLuckyNumbersDivOne{
+public:
+	long long dp[20][2][2][2][2];
+	string downLimit,upLimit;
+	long long go(int pos, int upOk, int downOk, int used, int isStarted){
+		if(pos>15) return 1;
+		long long& cache = dp[pos][upOk][downOk][used][isStarted];
+		if(cache != -1) return cache;
+		long long ret=0;
+		// printf("pos:%d, upOk:%d, downOk:%d, used:%d\n",pos,upOk,downOk,used);
+		int up = !upOk ? upLimit[pos]-'0' : 9;
+		int down = !downOk ? downLimit[pos]-'0' : 0;
+		// printf("down:%d, up:%d\n",down,up);
+		REP(i,down,up){
+			int nupOk = (i!=down), ndownOk = (i!=up);
+			int nused = isStarted ? (i!=4 && i!=7) : (i!=4 && i!=7 && i!=0);
+			if(used&&nused) continue;
+			ret += go(pos+1, nupOk, ndownOk, nused, isStarted|(i!=0));
+		}
+		return cache = ret;
+	}
+	long long find(long long a, long long b){
+		memset(dp, -1, sizeof(dp));
+		ostringstream os1, os2;
+		os1 << a;
+		os2 << b;
+		downLimit = os1.str(), upLimit = os2.str();
+		while(downLimit.size()<16) downLimit = "0" + downLimit;
+		while(upLimit.size()<16) upLimit = "0" + upLimit;
+		return go(0,0,0,0,0);
+	}
+};
 int main() {
-	long long num = 99999989;
-
-	while(num>1){
-		for(int i = 2; i <= num; i++){
-			if(num%i==0) mp[i]++, num/=i;
-		}	
-	}
-	int cnt=0;
-	for(auto it = mp.begin(); it != mp.end(); it++){
-		printf("%d %d\n",(*it).first, (*it).second);
-		cnt+=(*it).first*(*it).second;
-	}
-	printf("cnt:%d\n",cnt);
+	TheAlmostLuckyNumbersDivOne obj;
+	cout << obj.find(
+4,7
+		);
 	return 0;
 }

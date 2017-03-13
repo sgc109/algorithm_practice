@@ -27,24 +27,26 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-class SetMultiples{
-public:
-	long long smallestSubset(long long A, long long B, long long C, long long D){
-		A = max(A,B/2+1), C = max(C,D/2+1);
-		long long ans = B-A+1+D-C+1;
-		while(A<=B){
-			long long k = (C+B-1)/B;
-			long long l = max(A,(C+k-1)/k);
-			long long r = min(D/k,B);
-			if(l<=r) ans -= r-l+1;
-			B = l-1;
-
-		}
-		return ans;
-	}
-};
+int check[1000003];
+ll minn, maxx;
 int main() {
-	SetMultiples obj;
-	cout << obj.smallestSubset(53243, 11124726, 10000000000, 10000000000);
+	scanf("%lld%lld",&minn,&maxx);
+	REP(i,2,1000){
+		int mod = i*i;
+		ll base = (minn+mod-1)/mod*mod;
+		for(;base<=maxx; base+=mod){
+			check[base-minn]=1;
+		}
+	}
+	REP(i,1001,1000000){
+		ll mod = (ll)i*i;
+		ll base = (minn+mod-1)/mod*mod;
+		if(base <= maxx) check[base-minn]=1;
+	}
+	int ans=0;
+	for(ll i = minn; i <= maxx; i++){
+		ans += check[i-minn];
+	}
+	printf("%d",maxx-minn+1-ans);
 	return 0;
 }
