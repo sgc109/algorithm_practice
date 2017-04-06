@@ -9,7 +9,6 @@
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
 #define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)
-#define fastio() ios_base::sync_with_stdio(false),cin.tie(NULL)
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
@@ -28,16 +27,55 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int main() {
-	freopen("input.txt","w",stdout);
-	printf("128 128\n");
-	FOR(i,128){
-		if(i%2) {
-			FOR(i,64) printf("10");
-		}
-		else 
-			FOR(i,64) printf("01");
-		printf("\n");
+int sccid[100003];
+int order[100003];
+int cnt, sccCnt;
+stack<int> s;
+vector<int> sccGrp[100003];
+int N,M,a,b;
+vector<int> G[100003];
+int tarjan(int here){
+	order[here] = cnt++;
+	s.push(here);
+	int ret = order[here];
+	for(int there : G[here]){
+		if(sccid[there]!=-1) continue;
+		if(order[there]==-1) ret = min(ret, tarjan(there));
+		else ret = min(ret, order[there]);
 	}
+	if(ret>=order[here]){
+		while(!s.empty()){
+			int p = s.top();
+			sccid[p] = sccCnt;
+			s.pop();
+			if(p==here) break;
+		}
+		sccCnt++;
+	}
+	return ret;
+}
+int main() {
+	memset(order,-1,sizeof(order));
+	memset(sccid,-1,sizeof(sccid));
+	inp2(N,M);
+	FOR(i,M){
+		inp2(a,b);
+		a--,b--;
+		G[a].pb(b);
+	}
+	FOR(i,N) if(order[i]==-1) tarjan(i);
+	FOR(i,N){
+		sccGrp[sccid[i]].push_back(i);
+	}
+	sort(sccGrp,sccGrp+sccCnt);
+	printf("%d\n",sccCnt);
+	FOR(i,sccCnt){
+		FOR(j,sz(sccGrp[i])){
+			printf("%d ",sccGrp[i][j]+1);
+		}
+		printf("-1\n");
+	}
+
+	
 	return 0;
 }

@@ -28,16 +28,52 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
+priority_queue<int> pq;
+int N;
+string op;
 int main() {
-	freopen("input.txt","w",stdout);
-	printf("128 128\n");
-	FOR(i,128){
-		if(i%2) {
-			FOR(i,64) printf("10");
+	inp1(N);
+	vector<pair<string,int> > ans;
+	FOR(i,N){
+		cin >> op;
+		int a;
+		// inp1(a);
+		if(op != "removeMin") inp1(a);
+
+		if(op=="insert") pq.push(-a);
+		else if(op=="removeMin"){
+			if(pq.empty()) {
+				ans.push_back({"insert", 1e9});
+			}
+			else pq.pop();
 		}
-		else 
-			FOR(i,64) printf("01");
-		printf("\n");
+		else if(op=="getMin") {
+			if(pq.empty()){
+				ans.pb({"insert",a});
+				pq.push(-a);
+			}
+			else {				
+				while(!pq.empty() && -pq.top() < a) {
+					ans.pb({"removeMin",0});
+					pq.pop();
+				}				
+				if(pq.empty() || (!pq.empty()&& -pq.top()!=a)){
+					ans.pb({"insert", a});
+					pq.push(-a);
+				}
+			}
+		}
+		ans.pb({op, a});
+	}
+	cout << ans.size() << "\n";
+	FOR(i,sz(ans)){
+		string op = ans[i].first;
+		int a = ans[i].second;
+		if(op=="removeMin") {
+			cout << op << "\n";
+			continue;
+		}
+		cout << op << " " << a << "\n";
 	}
 	return 0;
 }

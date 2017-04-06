@@ -12,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,30 +27,41 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int X,Y,D,T;
-double sqr(double x){return x*x;}
-double ans1,ans2,ans3;
-double dist(double x, double y){
-	return sqrt(sqr(x)+sqr(y));
-}
+int N;
+int adj[303][303];
+int inorder[303];
+int order[303];
 int main() {
-	while(scanf("%d%d%d%d",&X,&Y,&D,&T)!=-1){
-		double d = dist(X,Y);
-		ans1 = d;
-		double in,out;
-		int n;
-		if(d<D){
-			ans2=D-d+T;
-			ans3=2*T;
+	inp1(N);
+	FOR(i,N){
+		FOR(j,N){
+			scanf("%1d",&adj[i][j]);
+			if(adj[i][j]) inorder[j]++;
 		}
-		else {
-			for(n=0, out=0.0; out<d; out+=D, n++){}
-			in = out-D;
-			ans2 = min(d-in+(n-1)*T,out-d+n*T);
-			ans3 = n*T;
+	}	
+	priority_queue<int> pq;
+	vi ans;
+	FOR(i,N){
+		if(!inorder[i]){
+			pq.push(-i);
 		}
-		printf("%.13lf\n",min({ans1,ans2,ans3}));
 	}
+	while(!pq.empty()){
+		int here = -pq.top();
+		ans.pb(here);
+		pq.pop();
+		FOR(there,N){
+			if(!adj[here][there]) continue;
+			inorder[there]--;
+			if(!inorder[there]) pq.push(-there);
+		}
+	}	
+	if(sz(ans)<N) {
+		printf("-1");
+		return 0;
+	}
+	FOR(i,sz(ans)) order[ans[i]] = i+1;
+	FOR(i,N) printf("%d ",order[i]);
 
 	return 0;
 }

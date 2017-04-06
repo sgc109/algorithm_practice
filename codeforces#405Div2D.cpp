@@ -12,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,30 +27,38 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int X,Y,D,T;
-double sqr(double x){return x*x;}
-double ans1,ans2,ans3;
-double dist(double x, double y){
-	return sqrt(sqr(x)+sqr(y));
+int N,M,a,b;
+vi G[200003];
+ll size[200003];
+ll dp[200003][5];
+ll ans;
+void dfs(int here, int dad){
+	size[here] = 0;
+	dp[here][0]++;
+	for(int there : G[here]){
+		if(there == dad) continue;
+		dfs(there, here);
+		FOR(i,M){
+			FOR(j,M){
+				int k = i+j+1;
+				ans += (M-((k%M)?(k%M):M)) * dp[here][i] * dp[there][j];
+			}
+		}
+		FOR(i,M) dp[here][(i+1)%M] += dp[there][i];
+		ans += size[there]*(N-size[there]);
+		size[here] += size[there];
+	}
+	size[here]++;
 }
 int main() {
-	while(scanf("%d%d%d%d",&X,&Y,&D,&T)!=-1){
-		double d = dist(X,Y);
-		ans1 = d;
-		double in,out;
-		int n;
-		if(d<D){
-			ans2=D-d+T;
-			ans3=2*T;
-		}
-		else {
-			for(n=0, out=0.0; out<d; out+=D, n++){}
-			in = out-D;
-			ans2 = min(d-in+(n-1)*T,out-d+n*T);
-			ans3 = n*T;
-		}
-		printf("%.13lf\n",min({ans1,ans2,ans3}));
+	inp2(N,M);
+	FOR(i,N-1){
+		inp2(a,b);
+		a--,b--;
+		G[a].pb(b);
+		G[b].pb(a);
 	}
-
+	dfs(0,-1);
+	printf("%lld",ans/M);
 	return 0;
 }

@@ -12,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,30 +27,49 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int X,Y,D,T;
-double sqr(double x){return x*x;}
-double ans1,ans2,ans3;
-double dist(double x, double y){
-	return sqrt(sqr(x)+sqr(y));
-}
-int main() {
-	while(scanf("%d%d%d%d",&X,&Y,&D,&T)!=-1){
-		double d = dist(X,Y);
-		ans1 = d;
-		double in,out;
-		int n;
-		if(d<D){
-			ans2=D-d+T;
-			ans3=2*T;
-		}
-		else {
-			for(n=0, out=0.0; out<d; out+=D, n++){}
-			in = out-D;
-			ans2 = min(d-in+(n-1)*T,out-d+n*T);
-			ans3 = n*T;
-		}
-		printf("%.13lf\n",min({ans1,ans2,ans3}));
+int T,N;
+int a,b,c;
+vii G[10003];
+ll dp[10003];
+ll size[10003];
+void dfs1(int here, int dad){
+	dp[here] = 0;
+	size[here] = 1;
+	for(auto p : G[here]){
+		int there = p.first;
+		int cost = p.second;
+		if(there == dad) continue;
+		dfs1(there, here);
+		size[here] += size[there];
+		dp[here] += dp[there] + size[there] * cost;
 	}
-
+}
+void dfs2(int here, int dad){
+	for(auto p : G[here]){
+		int there = p.first;
+		int cost = p.second;
+		if(there == dad) continue;	
+		dp[there] = dp[here] + (N-2*size[there]) * cost;
+		dfs2(there, here);
+	}
+}	
+int main() {
+	while(1){
+		FOR(i,10003) G[i].clear();
+		memset(size,0,sizeof(size));
+		memset(dp,0,sizeof(dp));
+		inp1(N);
+		if(!N) break;
+		FOR(i,N-1){
+			inp3(a,b,c);
+			G[a].pb({b,c});
+			G[b].pb({a,c});
+		}
+		dfs1(0,-1);
+		dfs2(0,-1);
+		ll ans = INFL;
+		FOR(i,N) ans = min(ans, dp[i]);
+		printf("%lld\n",ans);
+	}
 	return 0;
 }

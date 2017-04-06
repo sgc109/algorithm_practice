@@ -12,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,30 +27,43 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int X,Y,D,T;
-double sqr(double x){return x*x;}
-double ans1,ans2,ans3;
-double dist(double x, double y){
-	return sqrt(sqr(x)+sqr(y));
+int visited[150003];
+int N,M;
+int u,v;
+vi G[150003];
+int cntEdge;
+int cntNode;
+void NO(){
+	printf("NO");
+	exit(0);
+}
+void dfs(int here){
+	printf("here:%d\n",here);
+	cntNode++;
+	visited[here] = 1;
+	for(int there : G[here]){
+		cntEdge++;
+		if(visited[there]) continue;
+		dfs(there);
+	}
 }
 int main() {
-	while(scanf("%d%d%d%d",&X,&Y,&D,&T)!=-1){
-		double d = dist(X,Y);
-		ans1 = d;
-		double in,out;
-		int n;
-		if(d<D){
-			ans2=D-d+T;
-			ans3=2*T;
-		}
-		else {
-			for(n=0, out=0.0; out<d; out+=D, n++){}
-			in = out-D;
-			ans2 = min(d-in+(n-1)*T,out-d+n*T);
-			ans3 = n*T;
-		}
-		printf("%.13lf\n",min({ans1,ans2,ans3}));
+	memset(visited,0,sizeof(visited));
+	inp2(N,M);
+	FOR(i,M){
+		inp2(u,v);
+		u--,v--;
+		G[u].pb(v);
+		G[v].pb(u);
 	}
-
+	FOR(i,N) {
+		cntEdge = 0;
+		cntNode = 0;
+		if(!visited[i]) {
+			dfs(i);
+			if((ll)cntNode*(cntNode-1)/2 != cntEdge/2) NO();
+		}
+	}
+	printf("YES");
 	return 0;
 }

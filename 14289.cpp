@@ -12,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,30 +27,45 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int X,Y,D,T;
-double sqr(double x){return x*x;}
-double ans1,ans2,ans3;
-double dist(double x, double y){
-	return sqrt(sqr(x)+sqr(y));
+int N,M,D,a,b;
+vi G[53];
+struct matrix{
+	vector<vector<ll> > v;
+	int size;
+	matrix(){}
+	matrix(int sz) : size(sz) {
+		v = vector<vector<ll> >(size,vector<ll>(size,0));
+	}
+	matrix operator*(const matrix& rhs){
+		matrix ret(rhs.size);
+		FOR(i,size) FOR(j,size) FOR(k,size) (ret.v[i][j] += (v[i][k] * rhs.v[k][j]) % MOD) %= MOD;
+		return ret;
+	}
+};
+matrix E;
+matrix matPow(matrix mat, int n){
+	if(n==0) return E;
+	if(n%2){
+		matrix tmp = matPow(mat,(n-1)/2);
+		return tmp*tmp*mat;
+	}
+	matrix tmp = matPow(mat,n/2);
+	return tmp*tmp;
 }
 int main() {
-	while(scanf("%d%d%d%d",&X,&Y,&D,&T)!=-1){
-		double d = dist(X,Y);
-		ans1 = d;
-		double in,out;
-		int n;
-		if(d<D){
-			ans2=D-d+T;
-			ans3=2*T;
-		}
-		else {
-			for(n=0, out=0.0; out<d; out+=D, n++){}
-			in = out-D;
-			ans2 = min(d-in+(n-1)*T,out-d+n*T);
-			ans3 = n*T;
-		}
-		printf("%.13lf\n",min({ans1,ans2,ans3}));
+	inp2(N,M);
+	E = matrix(N);
+	FOR(i,N) E.v[i][i] = 1;
+	FOR(i,M){
+		inp2(a,b);
+		a--,b--;
+		G[a].pb(b);
+		G[b].pb(a);
 	}
-
+	inp1(D);
+	matrix start(N);
+	FOR(i,N) for(int j : G[i]) start.v[i][j] = 1;
+	matrix ret = matPow(start,D);
+	printf("%lld",ret.v[0][0]);
 	return 0;
 }

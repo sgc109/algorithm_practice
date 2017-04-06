@@ -27,34 +27,33 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int sccid[200003];
-int order[200003];
-int cnt, sccCnt;
+int N,M;
+int doors[100003];
+vi switche2[100003];
+
+vi G[200003];
+int sccCnt, cnt;
+int order[200003], sccId[200003];
 stack<int> s;
-int N,M,a,b;
-vector<int> G[200003];
-int trueFalse[100003];
 int NOT(int x){
 	return x^1;
 }
 int TRANS(int x){
-	if(x<0) return 2*(-x-1)+1;
-	return 2*(x-1);
+	return 2*x;
 }
-int tarjan(int here){
-	order[here] = cnt++;
+int dfs(int here){
 	s.push(here);
-	int ret = order[here];
+	int ret = order[here] = cnt++;
 	for(int there : G[here]){
-		if(sccid[there]!=-1) continue;
-		if(order[there]==-1) ret = min(ret, tarjan(there));
-		else ret = min(ret, order[there]);
-	}
-	if(ret>=order[here]){
-		while(!s.empty()){
+		if(sccId[there]!=-1) continue;
+		if(order[there]!=-1) ret = min(ret, order[there]);
+		else ret = min(ret, dfs(there));
+	}	
+	if(ret == order[here]){
+		while(1){
 			int p = s.top();
-			sccid[p] = sccCnt;
 			s.pop();
+			sccId[p] = sccCnt;
 			if(p==here) break;
 		}
 		sccCnt++;
@@ -63,40 +62,41 @@ int tarjan(int here){
 }
 int main() {
 	memset(order,-1,sizeof(order));
-	memset(sccid,-1,sizeof(sccid));
-	memset(trueFalse,-1,sizeof(trueFalse));
+	memset(sccId,-1,sizeof(sccId));
 	inp2(N,M);
+	FOR(i,N) inp1(doors[i]);
 	FOR(i,M){
-		inp2(a,b);
-		G[NOT(TRANS(a))].push_back(TRANS(b));
-		G[NOT(TRANS(b))].push_back(TRANS(a));
-	}
-	FOR(i,2*N) if(order[i]==-1) tarjan(i);
-
-	vii sorted;
-	FOR(i,2*N) sorted.push_back({-sccid[i],i});
-	sort(all(sorted));
-	bool imposs=false;
-	FOR(i,2*N-1) {
-		if(sorted[i].first == sorted[i+1].first && (sorted[i].second^1) == sorted[i+1].second) {
-			imposs=true;
-			break;
+		int k;
+		inp1(k);
+		FOR(j,k){	
+			int a;
+			inp1(a);
+			a--;
+			switche2[a].pb(i);
 		}
 	}
-	if(imposs){
-		printf("0\n");
-		return 0;
-	}
-	FOR(i,2*N){
-		int here = sorted[i].second;
-		int hereId = here/2;
-		if(trueFalse[hereId] !=-1) continue;
-		if(here&1) trueFalse[hereId] = 1;
-		else trueFalse[hereId] = 0;
-	}
-	printf("1\n");
 	FOR(i,N){
-		printf("%d ",trueFalse[i]);
+		int swt1 = switche2[i][0];
+		int swt2 = switche2[i][1];
+		int a = TRANS(swt1);
+		int b = TRANS(swt2);
+		if(!doors[i]) a = NOT(a);
+		G[a].pb(b);
+		G[b].pb(a);
+		G[NOT(a)].pb(NOT(b));
+		G[NOT(b)].pb(NOT(a));
 	}
+	FOR(i,2*M) if(order[i]==-1) dfs(i);
+	vii sorted;
+	FOR(i,2*M) sorted.pb({-sccId[i],i});
+	sort(all(sorted));  
+
+	FOR(i,sz(sorted)-1){
+		if(sorted[i].first == sorted[i+1].first && sorted[i].second == (sorted[i+1].second^1)) {
+			printf("NO");
+			return 0;
+		}
+	}
+	printf("YES");
 	return 0;
 }

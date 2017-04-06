@@ -12,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,30 +27,50 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int X,Y,D,T;
-double sqr(double x){return x*x;}
-double ans1,ans2,ans3;
-double dist(double x, double y){
-	return sqrt(sqr(x)+sqr(y));
+int W,H,G,E,X,Y,T;
+int X1,Y1,X2,Y2;
+vector<pair<pair<int,int>,int> > warf[903];
+int isGrave[33][33];
+ll dist[903];
+int dy[] = {0,-1,1,0};
+int dx[] = {-1,0,0,1};
+bool inRange(int i, int j){
+	return 0<=i && i < H && 0<= j && j < W;
 }
 int main() {
-	while(scanf("%d%d%d%d",&X,&Y,&D,&T)!=-1){
-		double d = dist(X,Y);
-		ans1 = d;
-		double in,out;
-		int n;
-		if(d<D){
-			ans2=D-d+T;
-			ans3=2*T;
+	while(1){
+		FOR(i,903) warf[i].clear();
+		memset(isGrave,0,sizeof(isGrave));
+		memset(dist,0x3c,sizeof(dist));
+		inp2(W,H);
+		if(!W&&!H) break;
+		inp1(G);
+		FOR(i,G){
+			inp2(X,Y);
+			isGrave[Y][X] = 1;
 		}
-		else {
-			for(n=0, out=0.0; out<d; out+=D, n++){}
-			in = out-D;
-			ans2 = min(d-in+(n-1)*T,out-d+n*T);
-			ans3 = n*T;
+		inp1(E);
+		FOR(i,E){
+			inp4(X1,Y1,X2,Y2,T);
+			warf[Y1][X1].pb({{X2,Y2},T});
 		}
-		printf("%.13lf\n",min({ans1,ans2,ans3}));
-	}
 
+		dist[0] = 0;
+		FOR(k,N){
+			FOR(i,H){
+				FOR(j,W){
+					FOR(l,4){
+						int ni = i+dy[l];
+						int nj = j+dx[l];
+						if(!inRange(ni,nj) || isGrave(ni,nj)) continue;
+						int there = ni*W+nj;
+						int cost = 1;
+						if(warf[there].size()) there = warf[there].
+						if(dist[there] < dist[here] + )
+					}
+				}
+			}
+		}
+	}
 	return 0;
 }

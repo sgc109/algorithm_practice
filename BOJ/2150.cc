@@ -1,112 +1,77 @@
-#include <iostream>
-#include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <queue>
-#include <utility>
-#include <stack>
-#include <cstring>
-#include <cstdlib>
-#include <string>
-#include <unordered_set>
-#include <set>
-#include <map>
-#define REP(i,a,b) for(int i = a; i < b;++i) 
-#define FOR(i,n) REP(i,0,n)
-#define mp make_pair
+#include <bits/stdc++.h>
+#define REP(i,a,b) for(int i=a;i<=b;++i)
+#define FOR(i,n) for(int i=0;i<n;++i)
 #define pb push_back
+#define all(v) (v).begin(),(v).end()
+#define sz(v) ((int)(v).size())
 #define inp1(a) scanf("%d",&a)
 #define inp2(a,b) scanf("%d%d",&a,&b)
 #define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
 #define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-
+#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)
 using namespace std;
-
-typedef pair<long long, long long> pll;
+typedef long long ll;
+typedef pair<ll,ll> pll;
+typedef vector<int> vi;	
+typedef vector<ll> vl;
+typedef pair<int,int> pii;
+typedef vector<pii> vii;
+typedef vector<pll> vll;
 typedef vector<vector<int> > vvi;
-typedef vector<int> vi;
+typedef pair<int,pair<int,int> > piii;
+typedef vector<piii> viii;
+const double EPSILON = 1e-9;
+const double PI = acos(-1);
+const int MOD = 1e9+7;
+const int INF = 0x3c3c3c3c;
+const long long INFL = 0x3c3c3c3c3c3c3c3c;
+const int MAX_N = 102;
 
-const int INF = 0x3a3a3a3a;
-const long long INFL = 0x3a3a3a3a3a3a3a3a;
-const int MAX_N = 10002;
-
-
-stack<int> component;
-int sccId[MAX_N];
-int findOrder[MAX_N];
-vvi adj;
 int V,E;
-
-int sccCnt=0, findCnt=0;
-int scc(int here) {
-	int ret = findOrder[here] = findCnt++;
-	component.push(here);
-
-	FOR(i,adj[here].size()) {
-		int there = adj[here][i];
-
-		if(findOrder[there] == -1) {
-			ret = min(ret,scc(there));
-		}
-		else if(sccId[there] == -1) {
-			ret = min(ret, findOrder[there]);
-		}
+int sccId[10003];
+int id;
+int a,b;
+vi G[10003];
+vi Gr[10003];
+int visited[10003];
+vi sccs[10003];
+stack<int> s;
+void dfs1(int here){
+	if(visited[here]) return;
+	visited[here] = 1;
+	for(int there : G[here]){
+		dfs1(there);
 	}
-
-	if(ret >= findOrder[here]) {
-		int p=-1;
-		while(p != here) {
-			p = component.top();
-			component.pop();
-			sccId[p] = sccCnt;
-		}
-		++sccCnt;
+	s.push(here);
+}
+int dfs2(int here){
+	if(sccId[here]!=-1) return 0;
+	sccId[here] = id;
+	for(int there : Gr[here]){
+		dfs2(there);
 	}
-
-	return ret;
+	return 1;
 }
 int main() {
 	inp2(V,E);
-	adj = vvi(V,vi());
-	memset(sccId,-1,sizeof(sccId));
-	memset(findOrder,-1,sizeof(findOrder));
-	FOR(i,E) {
-		int a,b;
+	FOR(i,E){
 		inp2(a,b);
-		--a;--b;
-		adj[a].pb(b);
+		G[a].pb(b);
+		Gr[b].pb(a);
 	}
-	FOR(i,V) {
-		if(findOrder[i] == -1) scc(i);
+	memset(visited,0,sizeof(visited));
+	REP(i,1,V) dfs1(i);
+	memset(sccId,-1,sizeof(sccId));
+	while(!s.empty()){
+		if(dfs2(s.top())) id++;
+		s.pop();
 	}
-
-	// FOR(i,V) {
-	// 	printf("%d ",sccId[i]);
-	// }
-	// printf("\n");
-
-	int cnt=0;
-	vector<int> ans[MAX_N];
-	int check[MAX_N];
-	memset(check,-1,sizeof(check));
-	FOR(i,V) {
-		if(check[sccId[i]] == -1) {
-			check[sccId[i]] = cnt++;
-			ans[check[sccId[i]]].pb(i+1);
-		}
-		else {
-			ans[check[sccId[i]]].pb(i+1);
-		}
-	}
-
-	printf("%d\n",cnt);
-	FOR(i,cnt) {
-		FOR(j,ans[i].size()) {
-			printf("%d ",ans[i][j]);
-		}
+	REP(i,1,V) sccs[sccId[i]].pb(i);
+	printf("%d\n",id);
+	sort(sccs,sccs+id);
+	FOR(i,id){
+		FOR(j,sz(sccs[i])) printf("%d ",sccs[i][j]);
 		printf("-1\n");
 	}
-
-
 	return 0;
 }

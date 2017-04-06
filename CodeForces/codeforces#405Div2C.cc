@@ -12,7 +12,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<ll,ll> pll;
-typedef vector<int> vi;
+typedef vector<int> vi;	
 typedef vector<ll> vl;
 typedef pair<int,int> pii;
 typedef vector<pii> vii;
@@ -27,30 +27,44 @@ const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
-int X,Y,D,T;
-double sqr(double x){return x*x;}
-double ans1,ans2,ans3;
-double dist(double x, double y){
-	return sqrt(sqr(x)+sqr(y));
-}
+int n,k;
+string ans[53];
+vector<string> strs;
 int main() {
-	while(scanf("%d%d%d%d",&X,&Y,&D,&T)!=-1){
-		double d = dist(X,Y);
-		ans1 = d;
-		double in,out;
-		int n;
-		if(d<D){
-			ans2=D-d+T;
-			ans3=2*T;
-		}
-		else {
-			for(n=0, out=0.0; out<d; out+=D, n++){}
-			in = out-D;
-			ans2 = min(d-in+(n-1)*T,out-d+n*T);
-			ans3 = n*T;
-		}
-		printf("%.13lf\n",min({ans1,ans2,ans3}));
+	FOR(i,26) {
+		stringstream ss;
+		string tmp;
+		char c = 'A'+i;
+		ss << c;
+		ss >> tmp;
+		strs.pb(tmp);
 	}
-
+	FOR(i,26) {
+		stringstream ss;
+		string tmp;
+		char c = 'a'+i;
+		ss << c;
+		ss >> tmp;
+		strs.pb("A"+tmp);
+	}
+	cin >> n >> k;
+	FOR(i,k-1){
+		ans[i] = strs.back();
+		strs.pop_back();
+	}
+	for(int i = 0; i < n - k + 1; i++){
+		string yesno;
+		cin >> yesno;
+		if(yesno=="NO"){
+			ans[i+k-1] = ans[i];
+		}
+		else if(yesno=="YES"){
+			ans[i+k-1] = strs.back();
+			strs.pop_back();
+		}
+	}
+	FOR(i,n){
+		cout << ans[i] << " " ;
+	}
 	return 0;
 }
