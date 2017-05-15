@@ -29,6 +29,10 @@ const long long INFL = 0x3c3c3c3c3c3c3c3c;
 const int MAX_N = 102;
 
 int main() {
+	freopen("C:/Users/sgc109/Documents/Algorithm/input.txt","w",stdout);
+
+	printf("100000 100000 1000000000000000000\n");
+	FOR(i,100000) printf("%d ",i);
 
 	return 0;
 }

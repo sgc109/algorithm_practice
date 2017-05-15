@@ -34,6 +34,9 @@ ll pow2(ll x, int n){
 }
 
 int main() {
-	printf("%lld",pow2(2,200000));
+	string s = "test";
+	string ss = s.substr(0,4-0)+s.substr(0,0);
+	printf("%d\n","test" == (ss));
+	cout << ss;
 	return 0;
 }
