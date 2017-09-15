@@ -1,47 +1,31 @@
-#include <iostream>
-#include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <queue>
-#include <utility>
-#include <stack>
-#include <cstring>
-#include <cstdlib>
-#include <string>
-#include <set>
-#include <cmath>
-// #include <unordered_set>
-// #include <map>
-#define REP(i,a,b) for(int i = a; i <= b;++i) 
-#define FOR(i,n) REP(i,0,n-1)
-#define mp make_pair
+#include <bits/stdc++.h>
 #define pb push_back
-#define inp1(a) scanf("%d",&a)
-#define inp2(a,b) scanf("%d%d",&a,&b)
-#define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
-#define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
-
+#define sz(v) ((int)(v).size())
+#define all(v) (v).begin(), (v).end()
+#define fastio() ios_base::sync_with_stdio(false),cin.tie(NULL)
 using namespace std;
-
 typedef long long ll;
-typedef pair<ll,ll> pll;
-typedef vector<int> vi;
-typedef vector<vector<int> > vvi;
-typedef pair<int,int> pii;
-typedef pair<int,pair<int,int> > piii;
+const int mod = 1e9+7;
+const int inf = 0x3c3c3c3c;
+const long long infl = 0x3c3c3c3c3c3c3c3c;
 
-const int INF = 0x3c3c3c3c;
-const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 1000000;
+struct RNG{
+	int a, b;
+	int seed;
+	RNG(int _a, int _b) : a(_a), b(_b), seed(1983) {}
+	int next() {
+		int ret = seed;
+		seed = ((seed*(long long)a)+b)%20090711;
+		return ret;
+	}
+};
 
-int T,N,M,K,R;
+int T,N,M,K,R,P;
 int main() {
 	freopen("input.txt","w",stdout);
-	printf("1\n10000\n");
-	REP(i,1,10000-1){
-		printf("%d %d 100\n",i-1,i);
-	}
-	printf("0");
+	RNG rng(243251, 109);
+	cout << 10000 << ' ' << 9999 << '\n';
+	cout << "-1 1 2\n";
+	for(int i = 0 ; i < 9998; i++) cout << 1 << ' ' << 2 << ' ' << i + 3 << endl;
 	return 0;
 }

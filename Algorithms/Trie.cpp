@@ -51,7 +51,6 @@ struct TrieNode {
         if(!child[next]) {
             child[next] = new TrieNode(id);
         }
-        
         return child[next]->insert(ch+1, id);
     }
 };

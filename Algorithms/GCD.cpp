@@ -16,6 +16,10 @@ int gcd(int a, int b) {
     return a+b;
 }
 
+ll gcd(ll a, ll b){
+	return !b ? a : gcd(b, a % b);
+}
+
 int main() {
     int a,b;
     cin >> a >> b;

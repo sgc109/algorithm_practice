@@ -1,0 +1,62 @@
+-- Example 0
+2
+Louis IX
+Louis VIII
+
+2
+Louis VIII
+Louis IX
+-- Example 1
+2
+Louis IX
+Philippe II
+
+2
+Louis IX
+Philippe II
+-- Example 2
+3
+Richard III
+Richard I
+Richard II
+
+3
+Richard I
+Richard II
+Richard III
+-- Example 3
+4
+John X
+John I
+John L
+John V
+
+4
+John I
+John V
+John X
+John L
+-- Example 4
+6
+Philippe VI
+Jean II
+Charles V
+Charles VI
+Charles VII
+Louis XI
+
+6
+Charles V
+Charles VI
+Charles VII
+Jean II
+Louis XI
+Philippe VI
+-- Example 5
+2
+Philippe II
+Philip II
+
+2
+Philip II
+Philippe II

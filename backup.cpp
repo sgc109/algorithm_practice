@@ -1,113 +1,91 @@
 #include <bits/stdc++.h>
-#define REP(i,a,b) for(int i=a;i<=b;++i)
-#define FOR(i,n) for(int i=0;i<n;++i)
-#define pb push_back
-#define all(v) (v).begin(),(v).end()
-#define sz(v) ((int)(v).size())
-#define inp1(a) scanf("%d",&a)
-#define inp2(a,b) scanf("%d%d",&a,&b)
-#define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
-#define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)
-#define fastio() ios_base::sync_with_stdio(false),cin.tie(NULL)
 using namespace std;
 typedef long long ll;
-typedef pair<ll,ll> pll;
-typedef vector<int> vi;	
-typedef vector<ll> vl;
-typedef pair<int,int> pii;
-typedef vector<pii> vii;
-typedef vector<pll> vll;
-typedef vector<vector<int> > vvi;
-typedef pair<int,pair<int,int> > piii;
-typedef vector<piii> viii;
-const double EPSILON = 1e-9;
-const double PI = acos(-1);
-const int MOD = 1e9+7;
 const int INF = 0x3c3c3c3c;
 const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
 
-int N;
-set<int> st;
-vll range;
-vl comp;
-ll d[800003];
-ll t[800003];
-ll pow2[100003];
-int size;
-
-void update(int nl, int nr, int l, int r, int node){
-	if(d[node]){
-		t[node] = (t[node] * pow2[d[node]]) % MOD;
-		if(nr-nl) d[2*node] += d[node], d[2*node+1] += d[node];
+vector<ll> getDivs(ll x){
+	set<ll> st;
+	for(ll i = 2; i * i <= x; i++){
+		while(x % i == 0) {
+			st.insert(i);
+			x /= i;
+		}
 	}
-	if(nr < l || r < nl) return;
-	if(l <= nl && nr <= r){
-		t[node]*=2;
-		if(nr-nl) d[2*node]++,d[2*node+1]++;
-		return;
+	if(x != 1) st.insert(x);
+	vector<ll> ret(st.begin(), st.end());
+	return ret;
+}
+ll euler(ll n, vector<ll>& divs){
+	ll up = n, down = 1;
+	for(auto d : divs){
+		up *= (d - 1);
+		down *= d;
 	}
-	int nm = (nl+nr)>>1;
-	update(nl, nm, l, r, 2*node);
-	update(nm+1, nr, l, r, 2*node);
-	t[node] = (t[2*node] + t[2*node+1]) % MOD;
+	return up / down;
 }
 
-ll query(int nl, int nr, int l, int r, int node){
-	if(d[node]){
-		t[node] = (t[node] * pow2[d[node]]) % MOD;
-		if(nr-nl) d[2*node] += d[node], d[2*node+1] += d[node];
-	}
-	if(nr < l || r < nr) return 0;
-	if(l <= nl && nr <= r) return t[node];
-	int nm = (nl+nr)>>1;
-	return (query(nl, nm, l, r, 2*node) | query(nm+1, nr, l, r, 2*node+1)) % MOD;
+ll fastPow(ll x, ll k, ll mod){
+	if(!k) return 1;
+	if(k % 2) return x * fastPow(x, k - 1, mod) % mod;
+	return fastPow(x * x % mod, k / 2, mod);
 }
 
-void update(int l, int r){
-	update(0, size-1, l, r, 1);
+struct Man{ll S, L, D;};
+int T,N;
+Man mans[5];
+ll TT[5];
+// bool isOk(ll t){
+// 	for(int i = 0 ; i < N; i++){
+// 		if((mans[i].D + mans[i].S * t) % mans[i].L) return false;
+// 	}
+// 	return true;
+// }
+ll gcd(ll a, ll b){
+	return !b ? a : gcd(b, a % b);
 }
-
-ll query(int l, int r){
-	return query(0, size-1, l, r, 1);
-}
-
-ll go(int pos, int last){
-	
-	return 0;
-}
-
-bool cmp(pll& A, pll& B){
-	if(A.second != B.second) return A.second < B.second;
-	return A.first < B.first;
-}
-
+int check[10000003];
 int main() {
-	inp1(N);
-	FOR(i,N){
-		ll a,b;
-		scanf("%lld%lld",&a,&b);
-		st.insert(a), st.insert(b);
-		range.pb({a,b});
+	setbuf(stdout, NULL);
+	scanf("%d", &T);
+	for(register int t = 1; t <= T; t++){
+		printf("Case #%d\n", t);
+		scanf("%d", &N);
+		for(int i = 0 ; i < N; i++){
+			scanf("%lld %lld %lld\n", &mans[i].S, &mans[i].L, &mans[i].D);
+			vector<ll> divs = getDivs(mans[i].L);
+			ll p = euler(mans[i].L, divs);
+			ll tmp = fastPow(mans[i].S, p - 1, mans[i].L);
+			TT[i] = ((-mans[i].D + mans[i].L) * tmp) % mans[i].L;
+		}
+
+		for(register int i = 0 ; i < N; i++){
+			for(register int j = 0 ; mans[i].L * j + TT[i] < 10000003; j++){
+				check[mans[i].L * j + TT[i]]++;
+			}
+		}
+
+		int ans = -1;
+		for(register int i = 0 ; i < 10000003; i++){
+			if(check[i] == N) {
+				ans = i;
+				break;
+			}
+		}
+
+		if(!ans){
+			ll gg = mans[0].L;
+			for(int i = 1; i < N; i++){
+				ll tmp1 = gcd(gg, mans[i].L);
+				gg = gg * mans[i].L / tmp1;
+			}
+			printf("%lld\n",gg);
+			memset(check,0,sizeof(check));
+			continue;
+		}
+
+		printf("%d\n", ans);
+		memset(check,0,sizeof(check));
 	}
-	for(auto it = st.begin() ; it != st.end(); it++){
-		comp.pb((*it));
-	}
-	size = sz(comp);
-
-	FOR(i,N){
-		ll& a = range[i].first;
-		ll& b = range[i].second;
-		a = lower_bound(all(comp),a) - comp.begin() + 1;
-		b = lower_bound(all(comp),b) - comp.begin() + 1;
-	}
-	sort(all(range),cmp);
-
-	pow2[0] = 1;
-	FOR(i,100001) pow2[i+1] = (pow2[i] * 2) % MOD;
-
-
-	
 	return 0;
 }

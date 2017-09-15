@@ -1,41 +1,73 @@
-#include <bits/stdc++.h>
-#define REP(i,a,b) for(int i=a;i<=b;++i)
-#define FOR(i,n) for(int i=0;i<n;++i)
-#define pb push_back
-#define all(v) (v).begin(),(v).end()
-#define sz(v) ((int)(v).size())
-#define inp1(a) scanf("%d",&a)
-#define inp2(a,b) scanf("%d%d",&a,&b)
-#define inp3(a,b,c) scanf("%d%d%d",&a,&b,&c)
-#define inp4(a,b,c,d) scanf("%d%d%d%d",&a,&b,&c,&d)
-#define inp5(a,b,c,d,e) scanf("%d%d%d%d%d",&a,&b,&c,&d,&e)
-using namespace std;
-typedef long long ll;
-typedef pair<ll,ll> pll;
-typedef vector<int> vi;	
-typedef vector<ll> vl;
-typedef pair<int,int> pii;
-typedef vector<pii> vii;
-typedef vector<pll> vll;
-typedef vector<vector<int> > vvi;
-typedef pair<int,pair<int,int> > piii;
-typedef vector<piii> viii;
-const double EPSILON = 1e-9;
-const double PI = acos(-1);
-const int MOD = 1e9+7;
-const int INF = 0x3c3c3c3c;
-const long long INFL = 0x3c3c3c3c3c3c3c3c;
-const int MAX_N = 102;
+#include <cstdio>
+#include <iostream>
+#include <map>
+#include <vector>
+#include <cassert>
 
-ll A, B, N;
-vll v;
-ll cntBasu(ll k){
-	ll s = (A+k-1)/k*k;
-	ll e = A/k*k;
-	return (s-e)/k+1;
-}
-int main() {
-	scanf("%lld%lld%lld",&A,&b,&N);
-	
+using namespace std;
+
+typedef long long ll;
+
+ll A,B,N;
+int notPrime[100003];
+vector<int> primes;
+map<ll, int> mp;
+vector<ll> dividers;
+
+int main(){
+	int T;
+	cin >> T;
+
+	for(int i = 2; i <= 100000; i++){
+		if(notPrime[i]) continue;
+		for(int j = 2*i; j <= 100000; j+=i){
+			notPrime[j] = 1;
+		}
+	}
+
+	for(int i = 2; i <= 100000; i++){
+		if(!notPrime[i]) primes.push_back(i);
+	}
+	for(int t = 1; t <= T; t++){
+		cin >> A >> B >> N;
+		dividers.clear();
+		mp.clear();
+
+		while(N > 1){
+			bool divided = false;
+			for(auto p : primes){
+				if(N % p == 0) {
+					N /= p; 
+					mp[p] = 1;
+					divided = true;
+					break;
+				}
+			}
+			if(!divided) break;
+		}
+
+		if(N != 1) mp[N] = 1;
+
+		for(auto it = mp.begin(); it != mp.end(); it++){
+			dividers.push_back((*it).first);
+		}
+
+		int size = dividers.size();
+		ll ans = 0;
+		for(int i = 0 ; i < 1<<size ; i++){
+			if(!i) continue;
+			int cnt = 0;
+			ll div = 1;
+			for(int j = 0 ; j < size; j++){
+				if(i&(1<<j)) div *= dividers[j], cnt++;
+			}
+			ll lo = (A+div-1)/div*div;
+			ll hi = B/div*div;
+			if(lo>hi) continue;
+			ll gasu = (hi-lo)/div + 1;
+			ans += cnt%2 ? gasu : -gasu;
+		}
+		cout << "Case #" << t << ": " <<  B - A + 1 - ans << endl;
+	}
 	return 0;
 }

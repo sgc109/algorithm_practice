@@ -1,51 +1,54 @@
 #include <bits/stdc++.h>
+#define pb push_back
+#define sz(v) ((int)(v).size())
+#define all(v) (v).begin(), (v).end()
+#define fastio() ios::sync_with_stdio(0),cin.tie(0)
 using namespace std;
 typedef long long ll;
 const int mod = 1e9+7;
 const int inf = 0x3c3c3c3c;
-const long long infl = 0x3c3c3c3c3c3c3c3c;
+const ll infl = 0x3c3c3c3c3c3c3c3c;
+const int MAX_N = 1e5 + 9;
 
-int N;
-ll A[100003];
-int rs[53];
-int chunk[53];
-int pow2[53];
+int arr[MAX_N], ans[MAX_N];
+vector<int> G[MAX_N];
 
 int main() {
-	scanf("%d",&N);
-	for(int i = 0 ; i < N; i++){
-		scanf("%lld",&A[i]);
-		ll a = A[i];
-		int cnt = -1;
-		for(ll b = a; b ; b/=2) cnt++;
-		if(a == (a&-a)) pow2[cnt]++;
-		else rs[cnt]++;
-	}
-
-	vector<int> ans;
-
-	int cnt = 0;
-	while(pow2[0]){
-		cnt++;
-		int pos = 0;
-		while(pow2[pos]) pow2[pos++]--;
-		chunk[pos-1]++;
-
-		int now = 0;
-		int ok = 1;
-		for(int i = 50; i >= 0 ; i--){
-			now += chunk[i];
-			now -= pow2[i+1] + rs[i];
-			
-			if(now < 0){
-				ok = 0;
-				break;
-			}
+	fastio();
+	freopen("jumping.in", "r", stdin);
+	int T;
+	cin >> T;
+	while(T--){
+		int N;
+		cin >> N;
+		for(int i = 0; i < N; i++) G[i].clear();
+		memset(ans, -1, sizeof(ans));
+		for(int i = 0; i < N; i++){
+			cin >> arr[i];
 		}
-		if(now - pow2[0] < 0) continue;
-		if(ok) ans.push_back(cnt);
+		for(int i = 0; i < N; i++){
+			if(i + arr[i] < N) G[i + arr[i]].push_back(i);
+			if(i - arr[i] >= 0) G[i - arr[i]].push_back(i);
+		}
+		queue<int> q;
+		int cnt = 0;
+		ans[N - 1] = 0;
+		q.push(N - 1);
+		while(!q.empty()){
+			int sz = q.size();
+			for(int i = 0; i < sz; i++){
+				int curr = q.front();
+				q.pop();
+				for(int next : G[curr]){
+					if(ans[next] == -1){
+						ans[next] = cnt + 1;
+						q.push(next);
+					}
+				}
+			}
+			cnt++;
+		}
+		for(int i = 0; i < N; i++) cout << ans[i] << "\n";
 	}
-	if(ans.size()==0) return !printf("-1");
-	for(int i = 0 ; i < ans.size(); i++) printf("%d ",ans[i]);
 	return 0;
 }

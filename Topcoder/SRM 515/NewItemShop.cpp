@@ -1,34 +1,66 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+typedef pair<int,pair<int,int> > piii;
 const int mod = 1e9+7;
 const int inf = 0x3c3c3c3c;
 const long long infl = 0x3c3c3c3c3c3c3c3c;
 
 class NewItemShop {
 public:
-    vector<pair<int,int> > v[24];
-    ll go(int t, int k){
-        if(t == )
+    int S,N;
+    double dp[25][25][1<<12];
+    piii comingMan[25]; // i 시간에 오는 사람의 (돈,확률) 정보
+    int multiComingCnt;
+    int multiIdx[25]; // i 번 사람의 bitmask 자릿수
+    int accProb[25];
+    vector<pair<int,int> > sorted[25];
+    double go(int t, int sword, int came){
+        if(t == 24 || !sword) return 0.0;
+        double& cache = dp[t][sword][came];
+        if(cache != -1.0) return cache;
+        cache = 0;
+        int man = comingMan[t].first;
+        int cost = comingMan[t].second.first;
+        int p = comingMan[t].second.second;
+        if(man == -1) cache = go(t+1, sword, came);
+        else {
+            int pos = multiIdx[man];
+            if(pos == -1 || !(came&(1<<pos))){
+                double tot = 100.0 - accProb[t];
+                int nextcame = came;
+                if(pos != -1) nextcame|=(1<<pos);
+                cache = max(cache, (tot-p)/tot*go(t+1,sword,came));
+                cache += p/tot*max(go(t+1,sword,nextcame), go(t+1,sword-1,nextcame)+cost);
+            }
+            else cache = go(t+1,sword,came);
+        }
+        return cache;
     }
     double getMaximum(int swords, vector<string> customers) {
-        for(int i = 0 ; i < customers.size(); i++){
-            string str;
-            stringstream ss(customers[i]);
-            while(getline(ss,str,' ')){
-                int a[3];
-                stringstream ss2(str);
-                int i = 0;
-                for(string str2; getline(ss2,str2,',');i++) a[i] = stoi(str2);
-                int t = a[0];
-                int c = a[1];
-                int p = a[2];
-                v[t].push_back({-c,-p});
+        memset(multiIdx,-1,sizeof(multiIdx));
+        for(int i = 0 ; i < 25; i++) comingMan[i] = {-1,{-1,-1}};
+        for(int i = 0 ; i < 25; i++) for(int j = 0 ; j < 25; j++) for(int k = 0 ; k < (1<<12); k++) dp[i][j][k] = -1.0;
+        S = swords;
+        N = customers.size();
+        for(int i = 0 ; i < N; i++){
+            stringstream ss1(customers[i]);
+            int j=0;
+            int acc = 0;
+            for(string str1; getline(ss1,str1,' ');j++){
+                stringstream ss2(str1);
+                vector<int> in;
+                for(string str2; getline(ss2,str2,',');) in.push_back(stoi(str2));
+                int t = in[0];
+                int c = in[1];
+                int p = in[2];
+                comingMan[t] = {i,{c,p}};
+                accProb[t] = acc;
+                acc += p;
             }
+            if(j>1) multiIdx[i] = multiComingCnt++;
         }
-        for(int i = 0 ; i < 24; i++) sort(v[i].begin(), v[i].end());
-        
-        return 0.0;
+        return go(0,swords,0);
     }
 };
 

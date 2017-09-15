@@ -1,45 +1,48 @@
-#include <iostream>
-#include <stdio.h>
-#include <vector>
-#include <algorithm>
-#include <queue>
-#include <utility>
-#include <stack>
-#include <string.h>
-#include <stdlib.h>
-#define REP(i,a,b) for(int i = a; i < b;++i) 
-#define FOR(i,n) REP(i,0,n)
-#define mp make_pair
-#define pb push_back
-
+#include <bits/stdc++.h>
+#define fastio() ios_base::sync_with_stdio(0),cin.tie(0)
 using namespace std;
-
 typedef long long ll;
-typedef pair<int, int> ii;
-typedef pair<ll, ll> llll;
-typedef vector<int> vi;
-typedef vector<ll> vll;
-typedef vector<vector<int> > vvi;
-typedef vector<ii> vii;
-	
-const int INF = 0x3a3a3a3a;
-const int MAX_V = 1000000;
+const int mod = 1e9+7;
+const int INF = 0x3c3c3c3c;
+const long long INFL = 0x3c3c3c3c3c3c3c3c;
 
-int main() {
-	int e,s,m;
-	scanf("%d%d%d",&e,&s,&m);
-	int year = 1;
-	while(1) {
-		if(e == 1 && s == 1 && m == 1) break;
-
-		--e;--s;--m;
-		if(!e) e = 15;
-		if(!s) s = 28;
-		if(!m) m = 19;
-		++year;
+ll xGCD(ll a, ll b, ll& x, ll& y){
+	if(!b){
+		x = 1, y = 0;
+		return a;
 	}
+	ll x1, y1;
+	int ret = xGCD(b, a % b, x1, y1);
+	x = y1, y = x1 - (a / b) * y1;
+	return ret;
+}
 
-	printf("%d",year);
-
+ll chinese(vector<ll>& mods, vector<ll>& remains){
+	ll lcm = 1;
+	for(ll num : mods) lcm *= num;
+	ll ret = 0;
+	ll N = 1;
+	for(ll num : mods) N *= num;
+	for(int i = 0 ; i < (int)mods.size(); i++){
+		ll n = mods[i];
+		ll x, y;
+		xGCD(n, N / n, x, y);
+		if(y < 0) y %= N, y += N;
+		ret = (ret + N / n * y % lcm * remains[i] % lcm) % lcm;
+	}
+	return ret;
+}
+int main() {
+	fastio();
+	vector<ll> mods({15, 28, 19});
+	vector<ll> remains;
+	for(int i = 0 ; i < 3; i++){
+		ll a;
+		cin >> a;
+		a--;
+		remains.push_back(a);
+	}
+	ll ret = chinese(mods, remains);
+	cout << ret + 1;
 	return 0;
 }
