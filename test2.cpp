@@ -9,6 +9,7 @@ const int mod = 1e9+7;
 const int inf = 0x3c3c3c3c;
 const ll infl = 0x3c3c3c3c3c3c3c3c;
 
+<<<<<<< HEAD
 int tree[300003];
 int tot;
 vector<int> idxs[300003];
@@ -55,3 +56,13 @@ int main() {
 	}
 	return 0;
 }
+=======
+int main() {
+	fastio();
+    int res = 1;
+    for(int i = 0; i < 13; i++) res *= 3;
+    cout << res;
+
+	return 0;
+}
+>>>>>>> 4c0e50b3daf6cced18799947e84f71d53d70c4ca
