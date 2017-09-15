@@ -1,0 +1,2 @@
+void read(int& x){ scanf("%d",&x); }
+template<typename T,typename... Args>void read(T& a,Args&... b){ read(a); read(b...); }

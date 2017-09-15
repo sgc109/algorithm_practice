@@ -1,0 +1,44 @@
+-- Example 0
+4
+a
+aa
+aaa
+aaaa
+2
+3
+
+50
+-- Example 1
+1
+abcdefgh
+0
+7
+
+31810104
+-- Example 2
+1
+abcdefgh
+1
+7
+
+0
+-- Example 3
+4
+a
+b
+c
+d
+3
+3
+
+24
+-- Example 4
+4
+ab
+bc
+xy
+yz
+2
+3
+
+2
