@@ -49,6 +49,6 @@ int main() {
 	return 0;
 	string A = "ABCDE";
 	string B = "CDEAB";
-
+    for(int i = 1; i <= N; i++) if(ord[i] == -1) dfs(i, 0, i);
 	return 0;
 }

@@ -11,12 +11,13 @@ const ll infl = 0x3c3c3c3c3c3c3c3c;
 
 int N;
 int A[103];
+vector<int> diff;
 int main(){
     cin >> N;
     for(int i = 0; i < N; i++) cin >> A[i];
-    int mx = 0;
-    for(int i = 0; i < N; i++) mx = max(mx, A[i]);
-    int ans = 0;
-    for(int i = 0; i < N; i++) ans += mx - A[i];
-    cout << ans;
+    for(int i = 0; i < N - 1; i++) diff.pb(A[i] - A[i + 1]);
+    int ok = 1;
+    for(int i = 0; i < sz(diff) - 1; i++) if(diff[i] != diff[i + 1]) ok = 0;
+    if(!ok) cout << A[N - 1];
+    else cout << A[N - 1] - diff[0];
 }

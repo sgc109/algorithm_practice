@@ -10,13 +10,11 @@ const int inf = 0x3c3c3c3c;
 const ll infl = 0x3c3c3c3c3c3c3c3c;
 
 int N;
-int A[103];
+int check[200003];
+int with;
 int main(){
     cin >> N;
-    for(int i = 0; i < N; i++) cin >> A[i];
-    int mx = 0;
-    for(int i = 0; i < N; i++) mx = max(mx, A[i]);
-    int ans = 0;
-    for(int i = 0; i < N; i++) ans += mx - A[i];
-    cout << ans;
+    for(int i = 0; i < 2 * N; i++) {
+        
+    }
 }

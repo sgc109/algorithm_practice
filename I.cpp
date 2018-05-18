@@ -1,36 +1,58 @@
 #include <bits/stdc++.h>
+#define pb push_back
+#define sz(v) ((int)(v).size())
+#define all(v) (v).begin(),(v).end()
+#define fastio() ios::sync_with_stdio(0),cin.tie(0);
 using namespace std;
 typedef long long ll;
-const int INF = 0x3c3c3c3c;
-const long long INFL = 0x3c3c3c3c3c3c3c3c;
+const int mod = 1e9 + 7;
+const int inf = 0x3c3c3c3c;
+const ll infl = 0x3c3c3c3c3c3c3c3c;
 
-int N;
-string S;
-int dp[1503][1503][3];
-int go(int l, int r, int stat){
-	if(l > r) return 0;
-	int& cache = dp[l][r][stat];
-	if(cache != -1) return cache;
-	int ret = 0;
-	if(stat == 0){
-		if(S[l] == 'B') ret = max(ret, 1 + go(l + 1, r, 1));
-		if(S[r] == 'B') ret = max(ret, 1 + go(l, r - 1, 1));
-	}
-	else if(stat == 1){
-		if(S[l] == 'L') ret = max(ret, 1 + go(l + 1, r, 2));
-		if(S[r] == 'L') ret = max(ret, 1 + go(l, r - 1, 2));
-	}
-	else if(stat == 2){
-		if(S[l] == 'D') ret = max(ret, 1 + go(l + 1, r, 0));
-		if(S[r] == 'D') ret = max(ret, 1 + go(l, r - 1, 0));
-	}
-	return cache = ret;
+int N, M;
+ll q, p;
+string S[253];
+ll sum[253][253];
+int vis[253][253];
+bool inRange(int i, int j){
+    return 0 <= i && i < N && 0 <= j && j < M;
 }
 int main(){
-	cin.sync_with_stdio(0), cin.tie(0);
-	memset(dp,-1,sizeof(dp));
-	cin >> N >> S;
-	int ret = go(0, (int)S.size() - 1, 0);
-	cout << ret;
-	return 0;	
+    cin >> N >> M >> q >> p;
+    for(int i = 0; i < N; i++) cin >> S[i];
+    for(int i = 0; i < N; i++){
+        for(int j = 0; j < M; j++){
+            if(S[i][j] == '.' || S[i][j] == '*') continue;
+            ll cst = (S[i][j] - 'A' + 1) * q;
+            queue<pair<pair<int,int>,ll> > q;
+            q.push({{i, j}, cst});
+            vector<pair<int,int> > back;
+            vis[i][j] = 1;
+            while(!q.empty()){
+                auto p = q.front();
+                int ci = p.first.first;
+                int cj = p.first.second;
+                back.pb({ci, cj});
+                ll cst = p.second;
+                q.pop();
+                sum[ci][cj] += cst;
+                if(cst / 2 == 0) continue;
+                for(int k = 0; k < 4; k++){
+                    int ni = ci + "2110"[k] - '1';
+                    int nj = cj + "1201"[k] - '1';
+                    if(!inRange(ni, nj) || S[ni][nj] == '*' || vis[ni][nj]) continue;
+                    vis[ni][nj] = 1;
+                    q.push({{ni, nj}, cst / 2});
+                }
+            }
+            for(auto p : back) vis[p.first][p.second] = 0;
+        }
+    }
+    int ans = 0;
+    for(int i = 0; i < N; i++){
+        for(int j = 0; j < M; j++){
+            if(sum[i][j] > p) ans++;
+        }
+    }
+    cout << ans;
 }
